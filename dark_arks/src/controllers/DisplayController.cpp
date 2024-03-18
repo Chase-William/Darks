@@ -1,41 +1,28 @@
 #include "DisplayController.h"
 
-DisplayController::DisplayController(DisplayControllerConfig& conf, GlobalHotKeyManager& global_hotkey_manager) :
+DisplayController::DisplayController(
+    DisplayControllerConfig conf,
+    GlobalHotKeyManager& hotkey_manager,
+    std::function<void()> handler
+) :
     conf_(conf),
-    global_hotkey_manager_(global_hotkey_manager)
+    hotkey_manager_(hotkey_manager),
+    handler_(handler)
 { }
 
-bool DisplayController::Register()
-{
-    // Parse hotkey_ string representation into a Key enum
-    auto optional_key = ParseKeyStr(conf_.hotkey_);
-    if (optional_key.has_value()) {
-        auto optional_id = global_hotkey_manager_.Register(
-            [this]() {
-                // Toggle show on hotkey_ is clicked
-                show_ = !show_;
-            }, 
-            optional_key.value());
-        if (optional_id.has_value()) {
-            hotkey_id_ = optional_id.value();
-            return true;
-        }
-    }
-    return false;
+bool DisplayController::Register() {
+    return hotkey_manager_.Register(
+        conf_.hotkey_,
+        handler_);
 }
 
-bool DisplayController::Unregister()
-{
-    // Should never attempt to unregister an alreayd unregistered hotkey_
-    assert(!hotkey_id_);
+bool DisplayController::Unregister() {
+    if (!conf_.hotkey_.id_)
+        return true;
 
-    if (global_hotkey_manager_.Unregister(hotkey_id_)) {
-        return !(hotkey_id_ = 0);
-    }
-    return false;
+    return hotkey_manager_.Unregister(conf_.hotkey_);
 }
 
-bool DisplayController::Show()
-{
-    return show_;
+void DisplayController::Dispose() {
+    hotkey_manager_.Unregister(conf_.hotkey_);
 }

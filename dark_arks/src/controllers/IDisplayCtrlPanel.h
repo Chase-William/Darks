@@ -1,6 +1,6 @@
 #pragma once
 
-#include "imgui.h"
+#include "imgui/imgui.h"
 
 /// <summary>
 /// Implenent to display a control panel for a controller.

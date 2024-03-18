@@ -10,7 +10,9 @@
 #include <stdexcept>
 #include <format>
 
-#include "controllers/VirtualInput.h"
+#include "../Log.h"
+#include "HotKey.h"
+#include "VirtualInput.h"
 
 /// <summary>
 /// Allows registration, unregistration, and listening of hotkeys.
@@ -24,16 +26,15 @@ public:
 	/// <param name="key"></param>
 	/// <param name="mods"></param>
 	/// <returns></returns>
-	std::optional<int> Register(
-		std::function<void()> handler,
-		Key key, 
-		Modifiers mods = Modifiers::None); // Should register take a callback, should that be a closure? give proper access to this*
+	bool Register(
+		HotKey& hotkey,
+		std::function<void()> handler);
 	/// <summary>
 	/// Unregisters the hotkey_ associated with the id.
 	/// </summary>
 	/// <param name="id"></param>
 	/// <returns></returns>
-	bool Unregister(int id);
+	bool Unregister(HotKey& hotkey);
 
 	void Dispatch(int id);
 private:

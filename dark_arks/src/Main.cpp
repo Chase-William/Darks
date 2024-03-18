@@ -3,48 +3,53 @@
 #include <dwmapi.h>
 #include <format>
 
-#include "imgui.h"
-#include "imgui_impl_win32.h"
-#include "imgui_impl_dx11.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_win32.h"
+#include "imgui/imgui_impl_dx11.h"
+
+#include "Log.h"
 
 #include "DarkArksApp.h"
 #include "OverlayWindowBase.h"
-#include "controllers/frontend/AutoClickerController.h"
-#include "controllers/frontend/AutoWalkerController.h"
 
-#include "controllers/backend/MouseController.h"
+#include "io/GlobalHotKeyManager.h"
+#include "io/GlobalKeyListener.h"
 
-#include "GlobalHotKeyManager.h"
-#include "GlobalKeyboardListener.h"
+#include "io/HotKey.h"
+
+#include "AutonomousWorker.h"
+
+//struct Foo
+//{
+//    class {
+//        int value;
+//    public:
+//        int& operator = (const int& i) { return value = i; }
+//        operator int() const { return value; }
+//        void TestFunc() { }
+//    } alpha;
+//
+//    class {
+//        float value;
+//    public:
+//        float& operator = (const float& f) { return value = f; }
+//        operator float() const { return value; }
+//    } bravo;
+//};
 
 INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show)
-{
-   /* auto result1 = ParseKeyStr("2");
-    auto result2 = ParseKeyStr("5");
-    auto result3 = ParseKeyStr("\\");
-    auto result4 = ParseKeyStr("`");*/
+{           
+    // Init our logger(s)
+    Darks::Log::Init();
 
-    GlobalHotKeyManager global_hotkey_manager = GlobalHotKeyManager();
-    GlobalKeyboardListener global_keyboard_listener = GlobalKeyboardListener();
+    // Log macros
+    DARKS_TRACE("Test Message");
+    DARKS_INFO("Test Message");    
+    DARKS_WARN("Test Message");
+    DARKS_ERROR("Test Message");
+    DARKS_CRITICAL("Test Message");   
 
-    // Library Controllers
-    MouseController mc = MouseController::New();
-    KeyboardController kc = KeyboardController();
     
-    // Config
-    DisplayControllerConfig display_conf = DisplayControllerConfig();
-    AutoClickerConfig clicker_conf = AutoClickerConfig();
-    AutoWalkerConfig walker_conf = AutoWalkerConfig();
-
-    // Create controllers
-    auto display_controller = DisplayController(display_conf, global_hotkey_manager);
-    auto auto_clicker = AutoClickerController(clicker_conf, mc, global_hotkey_manager);
-    auto auto_walker = AutoWalkerController(walker_conf, kc, global_hotkey_manager, global_keyboard_listener);
-    
-    auto_walker.Register();
-    auto_clicker.Register();
-    display_controller.Register();
-
     //
     //
     // Somewhere before we present the UI, we should make calls to our service to get config details.
@@ -57,23 +62,26 @@ INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show)
     //
 
     // Make app state
-    auto state = DarkArksApp({ &auto_clicker, &auto_walker }, display_controller);   
+    auto state = DarkArksApp();
 
     // Give state to overlay window base
-    OverlayWindowBase app = OverlayWindowBase(&state, global_hotkey_manager);
+    OverlayWindowBase app = OverlayWindowBase(state);
 
-    // Run the app
+    // Start the app
     try {
-        app.Run();
+        app.Start();
     }
     catch (std::exception ex) {
         auto msg = ex.what();
         printf(ex.what());
     }
 
-    auto_walker.Unregister();
+  /*  auto_walker.Unregister();
     auto_clicker.Unregister();
-    display_controller.Unregister();    
+    display_controller.Unregister();  */  
+
+    // Required for visual studio
+    spdlog::drop_all();
 
     return 0;
 }

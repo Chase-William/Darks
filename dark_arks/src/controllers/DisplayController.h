@@ -1,31 +1,34 @@
 #pragma once
 
+#include <functional>
+
 #include "IDisplayCtrlPanel.h"
 #include "IHotKeyable.h"
-#include "../GlobalHotKeyManager.h"
+#include "../io/GlobalHotKeyManager.h"
+#include "../io/HotKey.h"
 
 class DisplayControllerConfig {
 public:
-	std::string hotkey_ = "0";
+	HotKey hotkey_ = { Key::Num0 };
 };
 
 /// <summary>
 /// Controls whether the imgui window control panel is displayed.
 /// </summary>
-class DisplayController : public IDisplayCtrlPanel, public IHotKeyable
-{
+class DisplayController : public IHotKeyable {
 public:
-	DisplayController(DisplayControllerConfig& conf, GlobalHotKeyManager& global_hotkey_manager);
+	DisplayController(
+		DisplayControllerConfig conf, 
+		GlobalHotKeyManager& hotkey_manager,
+		std::function<void()> handler
+	);
 
-	bool Register();
-	bool Unregister();
-
-	bool Show();
-
+	bool Register() override;
+	bool Unregister() override;
+	void Dispose() override;	
 private:
-	bool show_ = true;
-	int hotkey_id_ = 0;
-	DisplayControllerConfig& conf_;
-	GlobalHotKeyManager& global_hotkey_manager_;
+	DisplayControllerConfig conf_;
+	GlobalHotKeyManager& hotkey_manager_;
+	std::function<void()> handler_;
 };
 

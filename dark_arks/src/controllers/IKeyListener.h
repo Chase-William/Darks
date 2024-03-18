@@ -1,8 +1,8 @@
 #pragma once
 
-#include "VirtualInput.h"
+#include "../io/VirtualInput.h"
 
-class IKeyboardListenable {
+class IKeyListener {
 public:
 	virtual void HandleKeystroke(Key key) = 0;
 };

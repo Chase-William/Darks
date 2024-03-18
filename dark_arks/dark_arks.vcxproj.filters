@@ -45,28 +45,46 @@
     <ClCompile Include="src\OverlayWindowBase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\controllers\frontend\AutoClickerController.cpp">
+    <ClCompile Include="src\controllers\AutoClickerController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\controllers\frontend\AutoWalkerController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\controllers\backend\MouseController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\controllers\backend\KeyboardController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GlobalHotKeyManager.cpp">
+    <ClCompile Include="src\io\GlobalHotKeyManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\controllers\DisplayController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\GlobalKeyboardListener.cpp">
+    <ClCompile Include="src\io\GlobalKeyListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\controllers\IKeyboardListenable.h">
+    <ClCompile Include="src\controllers\IKeyListener.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\io\HotKey.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\controllers\AutoWalkerController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\controllers\InventoryController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\controllers\KeyboardController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\controllers\MouseController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AutonomousWorker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\controllers\SuicideController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\DarksImguiWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -101,12 +119,6 @@
     <ClInclude Include="src\OverlayWindowBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\controllers\frontend\AutoClickerController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\controllers\frontend\AutoWalkerController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\controllers\IDisplayCtrlPanel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -116,22 +128,61 @@
     <ClInclude Include="src\controllers\IDisplayHUD.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\controllers\VirtualInput.h">
+    <ClInclude Include="src\io\VirtualInput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\controllers\backend\MouseController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\controllers\backend\KeyboardController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GlobalHotKeyManager.h">
+    <ClInclude Include="src\io\GlobalHotKeyManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\controllers\DisplayController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\GlobalKeyboardListener.h">
+    <ClInclude Include="src\io\GlobalKeyListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\io\HotKey.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controllers\AutoClickerController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controllers\AutoWalkerController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controllers\InventoryController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controllers\KeyboardController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controllers\MouseController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\io\Pixel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\io\Screen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AutonomousWorker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TaskInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controllers\SuicideController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Exceptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\DarksImguiWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controllers\IDisposable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

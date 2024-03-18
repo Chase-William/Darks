@@ -74,7 +74,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\build\bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\build\obj\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>C:\Dev\dark_arks\dark_arks\external\imgui;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Dev\dark_arks\dark_arks\external;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\build\bin\$(Platform)\$(Configuration)\</OutDir>
@@ -83,7 +83,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\build\bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\build\obj\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>C:\Dev\dark_arks\dark_arks\external\imgui;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Dev\dark_arks\dark_arks\external;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -146,14 +149,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\controllers\IKeyboardListenable.h" />
-    <ClCompile Include="src\GlobalKeyboardListener.cpp" />
+    <ClCompile Include="src\ui\DarksImguiWindow.cpp" />
+    <ClCompile Include="src\Log.cpp" />
+    <ClCompile Include="src\AutonomousWorker.cpp" />
+    <ClCompile Include="src\controllers\AutoWalkerController.cpp" />
+    <ClCompile Include="src\controllers\InventoryController.cpp" />
+    <ClCompile Include="src\controllers\KeyboardController.cpp" />
+    <ClCompile Include="src\controllers\MouseController.cpp" />
+    <ClCompile Include="src\io\HotKey.cpp" />
+    <ClCompile Include="src\controllers\IKeyListener.h" />
+    <ClCompile Include="src\io\GlobalKeyListener.cpp" />
     <ClCompile Include="src\controllers\DisplayController.cpp" />
-    <ClCompile Include="src\GlobalHotKeyManager.cpp" />
-    <ClCompile Include="src\controllers\backend\KeyboardController.cpp" />
-    <ClCompile Include="src\controllers\backend\MouseController.cpp" />
-    <ClCompile Include="src\controllers\frontend\AutoWalkerController.cpp" />
-    <ClCompile Include="src\controllers\frontend\AutoClickerController.cpp" />
+    <ClCompile Include="src\io\GlobalHotKeyManager.cpp" />
+    <ClCompile Include="src\controllers\AutoClickerController.cpp" />
     <ClCompile Include="src\DarkArksApp.cpp" />
     <ClCompile Include="external\imgui\imgui.cpp" />
     <ClCompile Include="external\imgui\imgui_demo.cpp" />
@@ -164,15 +172,23 @@
     <ClCompile Include="external\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\OverlayWindowBase.cpp" />
+    <ClCompile Include="src\controllers\SuicideController.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\GlobalKeyboardListener.h" />
+    <ClInclude Include="src\controllers\IDisposable.h" />
+    <ClInclude Include="src\ui\DarksImguiWindow.h" />
+    <ClInclude Include="src\Exceptions.h" />
+    <ClInclude Include="src\Log.h" />
+    <ClInclude Include="src\AutonomousWorker.h" />
+    <ClInclude Include="src\controllers\AutoClickerController.h" />
+    <ClInclude Include="src\controllers\AutoWalkerController.h" />
+    <ClInclude Include="src\controllers\InventoryController.h" />
+    <ClInclude Include="src\controllers\KeyboardController.h" />
+    <ClInclude Include="src\controllers\MouseController.h" />
+    <ClInclude Include="src\io\HotKey.h" />
+    <ClInclude Include="src\io\GlobalKeyListener.h" />
     <ClInclude Include="src\controllers\DisplayController.h" />
-    <ClInclude Include="src\GlobalHotKeyManager.h" />
-    <ClInclude Include="src\controllers\backend\KeyboardController.h" />
-    <ClInclude Include="src\controllers\backend\MouseController.h" />
-    <ClInclude Include="src\controllers\frontend\AutoWalkerController.h" />
-    <ClInclude Include="src\controllers\frontend\AutoClickerController.h" />
+    <ClInclude Include="src\io\GlobalHotKeyManager.h" />
     <ClInclude Include="src\controllers\IDisplayCtrlPanel.h" />
     <ClInclude Include="src\controllers\IHotKeyable.h" />
     <ClInclude Include="src\controllers\IDisplayHUD.h" />
@@ -185,8 +201,12 @@
     <ClInclude Include="external\imgui\imstb_rectpack.h" />
     <ClInclude Include="external\imgui\imstb_textedit.h" />
     <ClInclude Include="external\imgui\imstb_truetype.h" />
-    <ClInclude Include="src\controllers\VirtualInput.h" />
+    <ClInclude Include="src\io\Pixel.h" />
+    <ClInclude Include="src\io\Screen.h" />
+    <ClInclude Include="src\io\VirtualInput.h" />
     <ClInclude Include="src\OverlayWindowBase.h" />
+    <ClInclude Include="src\TaskInfo.h" />
+    <ClInclude Include="src\controllers\SuicideController.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -12,21 +12,27 @@ static int ToNative(ClickType click_type) {
 	case ClickType::Middle:
 		return MOUSEEVENTF_MIDDLEDOWN | MOUSEEVENTF_MIDDLEUP;
 	default:
-		throw std::invalid_argument(std::format("The given click type {} is invalid.", static_cast<int>(click_type)));
+		auto msg = std::format("The given click type {} is invalid.", static_cast<int>(click_type));
+		DARKS_ERROR(msg);
+		throw std::invalid_argument(msg);
 	}	
 }
 
-bool MouseController::Click(ClickType click_type) const
+void MouseController::Click(ClickType click_type) const
 {
 	INPUT input{};
 	input.type = INPUT_MOUSE;
 
 	input.mi.dwFlags = ToNative(click_type);
 
-	return SendInput(1, &input, sizeof(input));
+	if (!SendInput(1, &input, sizeof(input))) {
+		auto msg = std::format("Was unable to send a mouse click of type {}.", static_cast<int>(click_type));
+		DARKS_ERROR(msg);
+		throw std::runtime_error(msg);
+	}
 }
 
-bool MouseController::Click(int x, int y, ClickType click_type) const
+void MouseController::Click(int x, int y, ClickType click_type) const
 {
 	INPUT input{};
 	input.type = INPUT_MOUSE;
@@ -42,7 +48,11 @@ bool MouseController::Click(int x, int y, ClickType click_type) const
 		// MOUSEEVENTF_VIRTUALDESK | // Map to entire virtual desktop (all monitors included)
 		MOUSEEVENTF_MOVE; // Signify movement has occured and positioning should be used
 
-	return SendInput(1, &input, sizeof(input));
+	if (!SendInput(1, &input, sizeof(input))) {
+		auto msg = std::format("Was unable to send a mouse click at x: {:d}, y: {:d} of type {}.", x, y, static_cast<int>(click_type));
+		DARKS_ERROR(msg);
+		throw std::runtime_error(msg);
+	}
 }
 
 MouseController::MouseController(int primary_screen_width, int primary_screen_height) :
@@ -54,7 +64,10 @@ MouseController MouseController::New() {
 	// Get the width and height of the screen
 	int width = GetSystemMetrics(SM_CXSCREEN);
 	int height = GetSystemMetrics(SM_CYSCREEN);
-	if (!width || !height)
-		throw std::runtime_error("Failed to get screen width and/or height.");
+	if (!width || !height) {
+		auto msg = "Failed to get screen width and/or height.";
+		DARKS_ERROR(msg);
+		throw std::runtime_error(msg);
+	}
 	return MouseController(width, height);
 }

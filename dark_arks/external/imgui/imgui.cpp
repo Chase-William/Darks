@@ -251,7 +251,7 @@ CODE
  GETTING STARTED WITH INTEGRATING DEAR IMGUI IN YOUR CODE/ENGINE
  ---------------------------------------------------------------
  - See https://github.com/ocornut/imgui/wiki/Getting-Started.
- - Run and study the examples and demo in imgui_demo.cpp to get acquainted with the library.
+ - Start and study the examples and demo in imgui_demo.cpp to get acquainted with the library.
  - In the majority of cases you should be able to use unmodified backends files available in the backends/ folder.
  - Add the Dear ImGui source files + selected backend source files to your projects or using your preferred build system.
    It is recommended you build and statically link the .cpp files as part of your project and NOT as a shared library (DLL).
@@ -861,7 +861,7 @@ CODE
 
  Q: Where is the documentation?
  A: This library is poorly documented at the moment and expects the user to be acquainted with C/C++.
-    - Run the examples/ applications and explore them.
+    - Start the examples/ applications and explore them.
     - Read Getting Started (https://github.com/ocornut/imgui/wiki/Getting-Started) guide.
     - See demo code in imgui_demo.cpp and particularly the ImGui::ShowDemoWindow() function.
     - The demo covers most features of Dear ImGui, so you can read the code and see its output.

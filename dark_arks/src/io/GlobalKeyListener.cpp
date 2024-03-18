@@ -1,8 +1,8 @@
-#include "GlobalKeyboardListener.h"
+#include "GlobalKeyListener.h"
 
 // A pointer to the handler collection to be used for invoking callbacks
 // **NOTE, this should be a vec of vecs if we plan to use multipled instances of GlobalKeboardListener throughout the application
-static std::vector<IKeyboardListenable*>* handler_collection;
+static std::vector<IKeyListener*>* handler_collection;
 
 static LRESULT CALLBACK LowLevelKeyboardProc(
 	_In_ int    n_code,
@@ -34,12 +34,12 @@ static LRESULT CALLBACK LowLevelKeyboardProc(
 	return CallNextHookEx(NULL, n_code, w_param, l_param);
 }
 
-GlobalKeyboardListener::GlobalKeyboardListener()
+GlobalKeyListener::GlobalKeyListener()
 {
 	handler_collection = &listeners_;
 }
 
-void GlobalKeyboardListener::operator+=(IKeyboardListenable* listener) {
+void GlobalKeyListener::operator+=(IKeyListener* listener) {
 	// Check if registration is required
 	if (!low_level_keyboard_hook_) {
 		// Needs to register
@@ -48,14 +48,16 @@ void GlobalKeyboardListener::operator+=(IKeyboardListenable* listener) {
 		// Should have valid hook			
 		assert(low_level_keyboard_hook_);
 
-		if (!low_level_keyboard_hook_)
+		if (!low_level_keyboard_hook_) {
+			DARKS_ERROR("Was unable to register a low level keyboard hook for the auto walker.");
 			throw std::runtime_error("Failed to create WH_KEYBOARD_LL hook.");
+		}
 	}
 
 	listeners_.push_back(listener);
 }
 
-void GlobalKeyboardListener::operator-=(IKeyboardListenable* listener) {
+void GlobalKeyListener::operator-=(IKeyListener* listener) {
 	// Attempts to unregister handlers when the handlers vec is empty shouldnt happen
 	assert(!listeners_.empty());
 
@@ -72,8 +74,10 @@ void GlobalKeyboardListener::operator-=(IKeyboardListenable* listener) {
 		// The HHOOK should never be NULL if listers were registered
 		assert(low_level_keyboard_hook_);
 
-		if (!UnhookWindowsHookEx(low_level_keyboard_hook_))
+		if (!UnhookWindowsHookEx(low_level_keyboard_hook_)) {
+			DARKS_ERROR("Was unable to unregister the auto walker's low level keyboard hook.");
 			throw std::runtime_error("Failed to unregister WH_KEYBOARD_LL hook.");
+		}
 
 		// Reset hook value
 		low_level_keyboard_hook_ = NULL;
@@ -88,7 +92,7 @@ void GlobalKeyboardListener::operator-=(IKeyboardListenable* listener) {
 //
 //
 
-//std::optional<GKL_Key> GlobalKeyboardListener::Register(std::function<void()> handler, Key key)
+//std::optional<GKL_Key> GlobalKeyListener::Register(std::function<void()> handler, Key key)
 //{
 //	if (!hooked_) {
 //		// If not hooked, hook the listener
@@ -113,7 +117,7 @@ void GlobalKeyboardListener::operator-=(IKeyboardListenable* listener) {
 //	return std::optional<GKL_Key>({ id, &handler });
 //}
 //
-//bool GlobalKeyboardListener::Unregister(int id)
+//bool GlobalKeyListener::Unregister(int id)
 //{
 //	return false;
 //}

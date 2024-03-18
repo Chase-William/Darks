@@ -7,12 +7,12 @@
 #include <stdexcept>
 #include <format>
 
-#include <imgui.h>
-#include "imgui_impl_win32.h"
-#include "imgui_impl_dx11.h"
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_win32.h"
+#include "imgui/imgui_impl_dx11.h"
 
 #include "DarkArksApp.h"
-#include "GlobalHotKeyManager.h"
+#include "io/GlobalHotKeyManager.h"
 
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -23,15 +23,13 @@ public:
 	/// <summary>
 	/// Creates an overlay app instance.
 	/// </summary>
-	OverlayWindowBase(DarkArksApp* app, GlobalHotKeyManager& global_hotkey_manager);
+	OverlayWindowBase(DarkArksApp& app);
 
-	void Run();
+	void Start();
 	
 private:
 	// User defined app data
-	DarkArksApp* app_;
-
-	GlobalHotKeyManager& global_hotkey_manager_;
+	DarkArksApp& app_;
 
 	// Window data
 	WNDCLASSEXW wc_;

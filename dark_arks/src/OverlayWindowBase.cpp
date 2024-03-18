@@ -1,14 +1,13 @@
 #include "OverlayWindowBase.h"
 
-OverlayWindowBase::OverlayWindowBase(DarkArksApp* app, GlobalHotKeyManager& global_hotkey_manager) :
-	app_(app),
-	global_hotkey_manager_(global_hotkey_manager)
+OverlayWindowBase::OverlayWindowBase(DarkArksApp& app) :
+	app_(app)
 { }
 
 /// <summary>
 /// Runs the app, including initialization, the message loop, and cleanup.
 /// </summary>
-void OverlayWindowBase::Run() {
+void OverlayWindowBase::Start() {
 	WNDCLASSEXW wc = {
 		sizeof(wc),
 		CS_CLASSDC,
@@ -87,17 +86,7 @@ void OverlayWindowBase::Run() {
 		throw std::runtime_error("Failed to create D3D11 device_.");
 	}
 
-	// Show the window
-	if (ShowWindow(hwnd_, SW_SHOWDEFAULT)) {
-		CleanupDeviceD3D();
-		UnregisterClassW(wc.lpszClassName, wc.hInstance);
-		throw std::runtime_error("Failed to show the window.");
-	}
-	if (!UpdateWindow(hwnd_)) {
-		CleanupDeviceD3D();
-		UnregisterClassW(wc.lpszClassName, wc.hInstance);
-		throw std::runtime_error("Failed to update the window.");
-	}	
+	DWORD r = GetLastError();	
 
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
@@ -124,12 +113,24 @@ void OverlayWindowBase::Run() {
 	// Load fonts
 	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 20.0f);	
 	ImFont* hud_font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 40.0f);
-
+	
 	// Call the app's init function
-	app_->Init(hwnd_, hud_font);
+	app_.Init(hwnd_, hud_font);
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 0.00f);
 	
+	// Show the window
+	if (ShowWindow(hwnd_, SW_SHOWDEFAULT)) {
+		CleanupDeviceD3D();
+		UnregisterClassW(wc.lpszClassName, wc.hInstance);
+		throw std::runtime_error("Failed to show the window.");
+	}
+	if (!UpdateWindow(hwnd_)) {
+		CleanupDeviceD3D();
+		UnregisterClassW(wc.lpszClassName, wc.hInstance);
+		throw std::runtime_error("Failed to update the window.");
+	}
+
 	// Main loop
 	bool done = false;
 	while (!done)
@@ -140,8 +141,8 @@ void OverlayWindowBase::Run() {
 		while (PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
 		{
 			if (msg.message == WM_HOTKEY) {
-				// Call the hotkey_ dispatchers dispatch function providing the id of the hotkey_ in question
-				global_hotkey_manager_.Dispatch(msg.wParam);
+				// Propogate hotkey pressed
+				app_.OnHotKeyPressed(msg.wParam);
 			}
 
 			TranslateMessage(&msg);
@@ -181,7 +182,7 @@ void OverlayWindowBase::Run() {
 			0.5f
 		);*/		
 
-		app_->Update();
+		app_.OnUpdate();
 					
 		
 		// Rendering
@@ -194,6 +195,8 @@ void OverlayWindowBase::Run() {
 		swap_chain_->Present(1, 0); // Present with vsync
 		//g_pSwapChain->Present(0, 0); // Present without vsync
 	}
+
+	app_.OnShutdown();
 
 	// Cleanup
 	ImGui_ImplDX11_Shutdown();
