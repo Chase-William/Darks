@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DARKS_CONTROLLERS_DISPLAYCONTROLLER_H_
+#define DARKS_CONTROLLERS_DISPLAYCONTROLLER_H_
 
 #include <functional>
 
@@ -32,3 +33,4 @@ private:
 	std::function<void()> handler_;
 };
 
+#endif

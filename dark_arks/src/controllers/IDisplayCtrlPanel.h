@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DARKS_CONTROLLERS_IDISPLAYCTRLPANEL_H_
+#define DARKS_CONTROLLERS_IDISPLAYCTRLPANEL_H_
 
 #include "imgui/imgui.h"
 
@@ -11,3 +12,5 @@ public:
 		ImGui::Text("Default IDisplayCtrlPanel Text.");
 	};
 };
+
+#endif

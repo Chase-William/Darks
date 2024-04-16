@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DARKS_CONTROLLERS_AUTOWALKERCONTROLLER_H_
+#define DARKS_CONTROLLERS_AUTOWALKERCONTROLLER_H_
 
 #include <optional>
 #include <expected>
@@ -30,7 +31,6 @@ class AutoWalkerController : public IDisplayCtrlPanel, public IDisplayHUD, publi
 public:
 	AutoWalkerController(
 		AutoWalkerConfig conf,
-		KeyboardController& keyboard_controller,
 		GlobalHotKeyManager& hotkey_manager,
 		GlobalKeyListener& keyboard_listener);
 	
@@ -45,10 +45,11 @@ private:
 	bool running_ = false;
 
 	AutoWalkerConfig conf_;
-	KeyboardController& keyboard_controller_;
+	KeyboardController keyboard_controller_{};
 	GlobalHotKeyManager& hotkey_manager_;	
 	GlobalKeyListener& keyboard_listener_;
 
 	void Walk();
 };
 
+#endif

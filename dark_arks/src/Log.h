@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DARKS_LOG_H_
+#define DARKS_LOG_H_
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
@@ -21,3 +22,5 @@ namespace Darks {
 #define DARKS_WARN(...)     ::Darks::Log::GetLogger()->warn(__VA_ARGS__)
 #define DARKS_ERROR(...)    ::Darks::Log::GetLogger()->error(__VA_ARGS__)
 #define DARKS_CRITICAL(...) ::Darks::Log::GetLogger()->critical(__VA_ARGS__)
+
+#endif

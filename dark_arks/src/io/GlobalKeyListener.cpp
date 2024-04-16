@@ -13,22 +13,9 @@ static LRESULT CALLBACK LowLevelKeyboardProc(
 	if (n_code > -1) {
 		KBDLLHOOKSTRUCT* key_info = reinterpret_cast<KBDLLHOOKSTRUCT*>(l_param);
 
-		// 
+		// Inform listeners of keystroke
 		for (auto listener : *handler_collection)
 			listener->HandleKeystroke(static_cast<Key>(key_info->vkCode));
-
-		//switch (key_info->vkCode) {
-		//case 0x57: // W
-		//	// User has pressed W, and auto-walker should realize the user is taking control and adjust state
-
-		//	break;
-		//case 0x53:
-		//	// User is trying to backup their character, auto-walker should turn off
-
-		//	break;
-		//default:
-		//	break;
-		//}
 	}
 
 	return CallNextHookEx(NULL, n_code, w_param, l_param);

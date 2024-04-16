@@ -2,12 +2,10 @@
 
 AutoWalkerController::AutoWalkerController(
 	AutoWalkerConfig conf,
-	KeyboardController& keyboard_controller,
 	GlobalHotKeyManager& global_hotkey_manager,
 	GlobalKeyListener& global_keyboard_listener
 ) :
 	conf_(conf),
-	keyboard_controller_(keyboard_controller),
 	hotkey_manager_(global_hotkey_manager),
 	keyboard_listener_(global_keyboard_listener)
 { }

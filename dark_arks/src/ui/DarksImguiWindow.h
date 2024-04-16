@@ -1,9 +1,19 @@
-#pragma once
+#ifndef DARKS_UI_DARKSIMGUIWINDOW_H_
+#define DARKS_UI_DARKSIMGUIWINDOW_H_
 
+#ifndef DPP 
+#define DPP 
+#include "dpp/dpp.h"
+#endif	
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
-#include <vector>
+#endif
 
-#include "../controllers/IDisplayCtrlPanel.h"
+#include <string>
+#include <vector>
+#include <initializer_list>
+
 #include "../controllers/AutoClickerController.h"
 #include "../controllers/AutoWalkerController.h"
 #include "../controllers/MouseController.h"
@@ -11,21 +21,22 @@
 #include "../controllers/InventoryController.h"
 #include "../AutonomousWorker.h"
 
+/// <summary>
+/// The base window used for all imgui window implementation.
+/// </summary>
 class DarksImguiWindow {
 public:
-	DarksImguiWindow(
-		std::vector<IDisplayCtrlPanel*>& controllers,
-		AutonomousWorker& auto_worker);
-	/*DarksImguiWindow(DarksImguiWindow& window) {
-		auto_worker_ = window.auto_worker_;
-	}*/
+	DarksImguiWindow(std::string window_name
+	) : 
+		window_name_(window_name) 
+	{ }
 
 	static void Init(HWND hwnd);
 
-	void Update();
+	virtual void Update() = 0;
 
 	class {
-		bool value;
+		bool value = true;
 	public:
 		bool& operator = (const bool& v) {
 			// Check if redundent set
@@ -39,11 +50,16 @@ public:
 		operator bool() const { return value; }
 	} IsVisible; // Updates the native window when state changes
 
+	static void Update(std::initializer_list<DarksImguiWindow*> windows);
+
+protected:
+	bool IsMouseOver();
+
 private:
-	AutonomousWorker& auto_worker_;
-	std::vector<IDisplayCtrlPanel*>& controllers_;
+	std::string window_name_;
 
 	static void EnableInteractivity();
 	static void DisableInteractivity();
 };
 
+#endif

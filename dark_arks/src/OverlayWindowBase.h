@@ -1,6 +1,15 @@
-#pragma once
+#ifndef DARKS_OVERLAYWINDOWBASE_H_
+#define DARKS_OVERLAYWINDOWBASE_H_
 
+#ifndef DPP 
+#define DPP 
+#include "dpp/dpp.h"
+#endif	
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#endif
+
 #include <string>
 #include <d3d11.h>
 #include <dwmapi.h>
@@ -12,7 +21,9 @@
 #include "imgui/imgui_impl_dx11.h"
 
 #include "DarkArksApp.h"
+#include "MainThreadDispatcher.h"
 #include "io/GlobalHotKeyManager.h"
+
 
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -30,6 +41,7 @@ public:
 private:
 	// User defined app data
 	DarkArksApp& app_;
+	std::unique_ptr<MainThreadDispatcher> dispatcher_;
 
 	// Window data
 	WNDCLASSEXW wc_;
@@ -67,17 +79,14 @@ private:
 			SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)window_base);
 			return 0;
 		}
-		else {
-			window_base = (OverlayWindowBase*)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-		}
-		if (window_base)
-		{
-			return window_base->HandleMessage(msg, w_param, l_param);
-		}
 		else
-		{
-			return DefWindowProc(hwnd, msg, w_param, l_param);
-		}
+			window_base = (OverlayWindowBase*)GetWindowLongPtr(hwnd, GWLP_USERDATA);		
+
+		if (window_base)		
+			return window_base->HandleMessage(msg, w_param, l_param);		
+		else		
+			return DefWindowProc(hwnd, msg, w_param, l_param);		
 	}
 };
 
+#endif

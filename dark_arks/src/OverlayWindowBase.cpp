@@ -40,6 +40,8 @@ void OverlayWindowBase::Start() {
 		// Provide the pointer to our app data
 		this);		
 
+	dispatcher_ = std::make_unique<MainThreadDispatcher>(hwnd_);
+
 	// Set layered window attributes so it will be rendered transparently using an alpha channel
 	if (!SetLayeredWindowAttributes(hwnd_, RGB(0, 0, 0), BYTE(255), LWA_ALPHA)) {
 		UnregisterClassW(wc.lpszClassName, wc.hInstance);
@@ -111,11 +113,11 @@ void OverlayWindowBase::Start() {
 	}
 
 	// Load fonts
-	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 20.0f);	
+	io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf",  18.0f);	
 	ImFont* hud_font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 40.0f);
 	
 	// Call the app's init function
-	app_.Init(hwnd_, hud_font);
+	app_.Init(hwnd_, *dispatcher_, hud_font);
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 0.00f);
 	
@@ -143,12 +145,12 @@ void OverlayWindowBase::Start() {
 			if (msg.message == WM_HOTKEY) {
 				// Propogate hotkey pressed
 				app_.OnHotKeyPressed(msg.wParam);
-			}
+			}			
 
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 			if (msg.message == WM_QUIT)
-				done = true;
+				done = true;			
 		}
 		if (done)
 			break;		
@@ -283,7 +285,7 @@ void OverlayWindowBase::CleanupRenderTarget() {
 }
 
 LRESULT OverlayWindowBase::HandleMessage(UINT msg, WPARAM w_param, LPARAM l_param)
-{
+{	
 	switch (msg) {
 	case WM_SIZE:
 		if (w_param == SIZE_MINIMIZED)
@@ -298,6 +300,11 @@ LRESULT OverlayWindowBase::HandleMessage(UINT msg, WPARAM w_param, LPARAM l_para
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
+	}
+	
+	// Handle custom messages
+	if (msg >= WM_USER && msg < WM_APP && dispatcher_) {
+		return dispatcher_->Handle(msg);
 	}
 
 	return DefWindowProc(hwnd_, msg, w_param, l_param);

@@ -1,6 +1,6 @@
 #include "KeyboardController.h"
 
-void KeyboardController::Keystroke(Key key, KeyState state)
+void KeyboardController::Keystroke(Key key, KeyState state) const
 {
 	DARKS_TRACE(fmt::format("Requested to send key {} with state {}.", static_cast<unsigned char>(key), static_cast<int>(state)));
 
@@ -40,7 +40,7 @@ void KeyboardController::Keystroke(Key key, KeyState state)
 	DARKS_TRACE(fmt::format("Keystroke sent."));
 }
 
-void KeyboardController::Keystrokes(const std::string& text)
+void KeyboardController::Keystrokes(const std::string& text) const
 {	
 	DARKS_TRACE(fmt::format("Sending keystrokes: {}.", text));
 

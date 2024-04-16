@@ -1,6 +1,7 @@
 // Src: https://gist.githubusercontent.com/Nordaj/cc6cadcbee1019a3299939d0f1b86296/raw/129e29e412dc638867c6081ff5e501da27fb3655/Keys.h
 
-#pragma once
+#ifndef DARKS_IO_VIRTUALINPUT_H_
+#define DARKS_IO_VIRTUALINPUT_H_
 
 #include <map>
 #include <string>
@@ -337,3 +338,5 @@ static std::optional<Key> ParseKeyStr(std::string key_str) {
 	}
 	return std::optional<Key>();
 }
+
+#endif

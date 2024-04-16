@@ -164,3 +164,13 @@ An interface that when implemented provides a means for the Autonomous mode work
 
 - Enqueue(), Pushes a task onto the back of queue.
 - Dequeue(), Pops a queue from the start of the queue.
+
+## Loot Crates
+
+### `DefaultCrate`
+
+- **#Wait** *n* seconds *(allow structures/terrain to load)*
+  - **#Open-Crate**, attempt to open crate
+  - If failed to open crate, look down for *n* seconds, continue to **#Open-Crate** again
+- If crate inventory not open, exit
+- **#Transfer**, take items from 

@@ -74,7 +74,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\build\bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\build\obj\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>C:\Dev\dark_arks\dark_arks\external;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Dev\dark_arks\dark_arks\external;$(IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\build\bin\$(Platform)\$(Configuration)\</OutDir>
@@ -83,7 +83,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\build\bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)\build\obj\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>C:\Dev\dark_arks\dark_arks\external;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Dev\dark_arks\dark_arks\external;$(IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
@@ -123,6 +123,8 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -139,6 +141,8 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -149,6 +153,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\controllers\ProcessController.cpp" />
+    <ClCompile Include="src\MainThreadDispatcher.cpp" />
+    <ClCompile Include="src\controllers\garden\FloraFarmer.cpp" />
+    <ClCompile Include="src\controllers\garden\BerryFarmerController.cpp" />
+    <ClCompile Include="src\controllers\IQueueable.cpp" />
+    <ClCompile Include="src\DarksDiscord.cpp" />
+    <ClCompile Include="src\controllers\IdleController.cpp" />
+    <ClCompile Include="src\ui\ManualModeWindow.cpp" />
+    <ClCompile Include="src\ui\AutonomousModeWindow.cpp" />
+    <ClCompile Include="src\controllers\MovementController.cpp" />
+    <ClCompile Include="src\controllers\GeneralController.cpp" />
+    <ClCompile Include="src\controllers\CameraController.cpp" />
+    <ClCompile Include="src\controllers\island\LootCrateFarmerController.cpp" />
+    <ClCompile Include="src\controllers\SpawnController.cpp" />
+    <ClCompile Include="src\GlobalTimerManager.cpp" />
+    <ClCompile Include="src\SyncInfo.cpp" />
     <ClCompile Include="src\ui\DarksImguiWindow.cpp" />
     <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\AutonomousWorker.cpp" />
@@ -173,11 +193,29 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\OverlayWindowBase.cpp" />
     <ClCompile Include="src\controllers\SuicideController.cpp" />
+    <ClCompile Include="src\controllers\garden\VegetableFarmerController.cpp" />
+    <ClCompile Include="src\controllers\TribeLogController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\controllers\ProcessController.h" />
+    <ClInclude Include="src\MainThreadDispatcher.h" />
+    <ClInclude Include="src\controllers\garden\FloraFarmer.h" />
+    <ClInclude Include="src\controllers\garden\BerryFarmerController.h" />
+    <ClInclude Include="src\DarksDiscord.h" />
+    <ClInclude Include="src\controllers\IdleController.h" />
+    <ClInclude Include="src\io\Window.h" />
+    <ClInclude Include="src\ui\ManualModeWindow.h" />
+    <ClInclude Include="src\ui\AutonomousModeWindow.h" />
+    <ClInclude Include="src\controllers\IQueueable.h" />
+    <ClInclude Include="src\controllers\MovementController.h" />
+    <ClInclude Include="src\controllers\GeneralController.h" />
+    <ClInclude Include="src\controllers\CameraController.h" />
+    <ClInclude Include="src\controllers\island\LootCrateFarmerController.h" />
+    <ClInclude Include="src\controllers\island\LootCrates.h" />
+    <ClInclude Include="src\controllers\SpawnController.h" />
     <ClInclude Include="src\controllers\IDisposable.h" />
+    <ClInclude Include="src\GlobalTimerManager.h" />
     <ClInclude Include="src\ui\DarksImguiWindow.h" />
-    <ClInclude Include="src\Exceptions.h" />
     <ClInclude Include="src\Log.h" />
     <ClInclude Include="src\AutonomousWorker.h" />
     <ClInclude Include="src\controllers\AutoClickerController.h" />
@@ -205,8 +243,15 @@
     <ClInclude Include="src\io\Screen.h" />
     <ClInclude Include="src\io\VirtualInput.h" />
     <ClInclude Include="src\OverlayWindowBase.h" />
-    <ClInclude Include="src\TaskInfo.h" />
+    <ClInclude Include="src\SyncInfo.h" />
     <ClInclude Include="src\controllers\SuicideController.h" />
+    <ClInclude Include="src\controllers\garden\VegetableFarmerController.h" />
+    <ClInclude Include="src\controllers\TribeLogController.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="external\dpp\command.hpp" />
+    <ClInclude Include="external\dpp\fmt-minimal.h" />
+    <ClInclude Include="external\dpp\json_fwd.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

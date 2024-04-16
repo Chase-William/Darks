@@ -1,8 +1,37 @@
-#pragma once
+#ifndef DARKS_IO_PIXEL_H_
+#define DARKS_IO_PIXEL_H_
 
+#ifndef DPP 
+#define DPP 
+#include "dpp/dpp.h"
+#endif	
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#endif
+
 #include <cstddef>
 #include <optional>
+
+struct Rect {
+public:
+    int left;
+    int top;
+    int right;
+    int bottom;
+
+    Rect(
+        int left, int top, int right, int bottom
+    ) :
+        left(left),
+        top(top),
+        right(right),
+        bottom(bottom)
+    { }
+
+    int Width() const { return right - left; }
+    int Height() const { return bottom - top; }
+};
 
 /// <summary>
 /// Represents a RGB color value.
@@ -47,3 +76,5 @@ public:
     Point pos;
     Color color;
 };
+
+#endif

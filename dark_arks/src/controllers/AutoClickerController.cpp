@@ -2,11 +2,9 @@
 
 AutoClickerController::AutoClickerController(	
 	AutoClickerConfig conf,
-	MouseController& mouse_controller,
 	GlobalHotKeyManager& global_hotkey_manager
 ) :	
 	conf_(conf),
-	mouse_controller_(mouse_controller),
 	hotkey_manager_(global_hotkey_manager)
 { }
 

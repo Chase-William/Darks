@@ -1,6 +1,15 @@
-#pragma once
+#ifndef DARKS_CONTROLLERS_MOUSECONTROLLER_H_
+#define DARKS_CONTROLLERS_MOUSECONTROLLER_H_
 
+#ifndef DPP 
+#define DPP 
+#include "dpp/dpp.h"
+#endif	
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#endif
+
 #include <stdexcept>
 #include <format>
 
@@ -21,7 +30,7 @@ enum class ClickType {
 /// </summary>
 class MouseController {
 public:
-	static MouseController New();
+	MouseController();
 
 	/// <summary>
 	/// Clicks using the cursor's current position.
@@ -40,9 +49,8 @@ public:
 	void Click(Point pos, ClickType click_type = ClickType::Left) const { return Click(pos.x, pos.y, click_type); }
 
 private:
-	MouseController(int primary_screen_width, int primary_screen_height);
-
 	int primary_screen_width_;
 	int primary_screen_height_;
 };
 
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DARKS_CONTROLLER_AUTOCLICKERCONTROLLER_H_
+#define DARKS_CONTROLLER_AUTOCLICKERCONTROLLER_H_
 
 #include "thread"
 
@@ -31,8 +32,7 @@ public:
 class AutoClickerController : public IDisplayCtrlPanel, public IHotKeyable, public IDisplayHUD {
 public:
 	AutoClickerController(
-		AutoClickerConfig conf,
-		MouseController& mouse_controller, 		
+		AutoClickerConfig conf,	
 		GlobalHotKeyManager& hotkey_manager
 	);
 
@@ -44,9 +44,10 @@ public:
 
 private:
 	AutoClickerConfig conf_;
-	MouseController& mouse_controller_;	
+	MouseController mouse_controller_{};
 	GlobalHotKeyManager& hotkey_manager_;
 
 	bool running_ = false;
 };
 
+#endif

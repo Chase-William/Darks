@@ -1,6 +1,15 @@
-#pragma once
+#ifndef DARKS_IO_GLOBALKEYLISTENER_H_
+#define DARKS_IO_GLOBALKEYLISTENER_H_
 
+#ifndef DPP 
+#define DPP 
+#include "dpp/dpp.h"
+#endif	
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#endif
+
 #include <map>
 #include <functional>
 #include <optional>
@@ -42,3 +51,4 @@ private:
 	HHOOK low_level_keyboard_hook_ = NULL;
 };
 
+#endif

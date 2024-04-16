@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DARKS_CONTROLLERS_IDISPLAYHUD_H_
+#define DARKS_CONTROLLERS_IDISPLAYHUD_H_
 
 #include "imgui/imgui.h"
 
@@ -11,3 +12,5 @@ public:
 		ImGui::GetBackgroundDrawList()->AddText({ 100, 100 }, ImColor(1, 0, 0), "Default Overlay Text!\0");
 	}
 };
+
+#endif

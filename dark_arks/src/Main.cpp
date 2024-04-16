@@ -1,41 +1,8 @@
-#include <d3d11.h>
-#include <tchar.h>
-#include <dwmapi.h>
-#include <format>
-
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_win32.h"
-#include "imgui/imgui_impl_dx11.h"
+#include <stdexcept>
 
 #include "Log.h"
-
 #include "DarkArksApp.h"
 #include "OverlayWindowBase.h"
-
-#include "io/GlobalHotKeyManager.h"
-#include "io/GlobalKeyListener.h"
-
-#include "io/HotKey.h"
-
-#include "AutonomousWorker.h"
-
-//struct Foo
-//{
-//    class {
-//        int value;
-//    public:
-//        int& operator = (const int& i) { return value = i; }
-//        operator int() const { return value; }
-//        void TestFunc() { }
-//    } alpha;
-//
-//    class {
-//        float value;
-//    public:
-//        float& operator = (const float& f) { return value = f; }
-//        operator float() const { return value; }
-//    } bravo;
-//};
 
 INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show)
 {           
@@ -49,7 +16,14 @@ INT APIENTRY WinMain(HINSTANCE instance, HINSTANCE, PSTR, INT cmd_show)
     DARKS_ERROR("Test Message");
     DARKS_CRITICAL("Test Message");   
 
-    
+    // Creates a repeating timer that elapses every 5 seconds
+    //auto timer_manager = GlobalTimerManager();
+    //auto id = timer_manager.Register(
+    //    []() {
+    //        std::printf("asdd"); // Enqueue work to autonomous worker thread here
+    //    }, 
+    //    5000);
+
     //
     //
     // Somewhere before we present the UI, we should make calls to our service to get config details.

@@ -1,18 +1,16 @@
 #include "InventoryController.h"
 
-InventoryController::InventoryController(InventoryConfig conf, KeyboardController& keyboard_controller) :
-	conf_(conf),
-	keyboard_controller_(keyboard_controller)
+InventoryController::InventoryController(InventoryConfig conf) :
+	conf_(conf)
 { }
 
-bool InventoryController::IsOpen(Inventory target) const {
-	auto actual = Screen::GetPixelColor(conf_.inventory_open_pixel_.pos);
-	auto expected = conf_.inventory_open_pixel_.color;
-	// Get the pixel color	
-	return Screen::GetPixelColor(conf_.inventory_open_pixel_.pos) == conf_.inventory_open_pixel_.color;
-}
-
-bool InventoryController::Open(Inventory target, TaskInfo info) const {
+bool InventoryController::Open(
+	SyncInfo & info, 
+	Inventory target, 
+	int wait_for_inventory_open_poll_interval, 
+	int wait_for_inventory_open_timeout, 
+	int after_success_delay_
+) const {
 	DARKS_TRACE(fmt::format("Attempting to open {} inventory.", ToString(target)));
 
 	// Inventory already open
@@ -23,11 +21,23 @@ bool InventoryController::Open(Inventory target, TaskInfo info) const {
 
 	// Send open invent key in-game
 	SendInventoryUpdateKey(target);
-	
-	return CheckInventoryUntilTimeout(target, info, [this](Inventory target) { return IsOpen(target); });
+
+	// Check if inventory opens
+	if (info.Wait(*this, wait_for_inventory_open_poll_interval, wait_for_inventory_open_timeout, target)) {
+		// Delay for interactability if successfully opened
+		info.Wait(after_success_delay_);
+		return true;
+	}
+	return false;
 }
 
-bool InventoryController::Close(Inventory target, TaskInfo info) const {
+bool InventoryController::Close(
+	SyncInfo& info, 
+	Inventory target, 
+	int wait_for_inventory_close_poll_interval, 
+	int wait_for_inventory_close_timeout, 
+	int after_success_delay_
+) const {
 	DARKS_TRACE(fmt::format("Attempting to close {} inventory.", ToString(target)));
 
 	// Inventory already closed
@@ -39,7 +49,30 @@ bool InventoryController::Close(Inventory target, TaskInfo info) const {
 	// Send close invent key in-game
 	SendInventoryUpdateKey(target);
 
-	return CheckInventoryUntilTimeout(target, info, [this](Inventory target) { return !IsOpen(target); });
+	// Check if inventoy closes
+	if (!info.Wait(*this, wait_for_inventory_close_poll_interval, wait_for_inventory_close_timeout, target)) {
+		// Will run if inventory has closed
+		// Delay for interactability if succesfully closed
+		info.Wait(after_success_delay_);
+		return true;
+	}
+	return false;
+}
+
+bool InventoryController::IsOpen(Inventory target) const {
+	Color actual;
+	switch (target) {
+	case Inventory::Self:
+		return Screen::GetPixelColor(conf_.self_inventory_open_pixel_.pos) == conf_.self_inventory_open_pixel_.color;
+	case Inventory::Other:
+		return Screen::GetPixelColor(conf_.other_inventory_open_pixel_.pos) == conf_.other_inventory_open_pixel_.color;
+	default:
+		throw new std::invalid_argument(fmt::format("Invalid argument of {:d} provided.", static_cast<int>(target)));
+	}
+}
+
+bool InventoryController::Check(int code) const {
+	return IsOpen(static_cast<Inventory>(code));
 }
 
 void InventoryController::SendInventoryUpdateKey(Inventory target) const {
@@ -56,27 +89,27 @@ void InventoryController::SendInventoryUpdateKey(Inventory target) const {
 	}
 }
 
-bool InventoryController::CheckInventoryUntilTimeout(Inventory target, TaskInfo info, std::function<bool(Inventory)> check) const
-{
-	// Check for updates at the provided interval while also checking for condtional variable update to shutdown current thread
-	for (int accum_timeout = 0; accum_timeout < info.timeout; accum_timeout += info.interval) {
-		std::unique_lock<std::mutex> lock(info.mut);
-		info.cond_var.wait_for(lock, std::chrono::milliseconds(info.interval));
-
-		if (info.shutdown) {
-			DARKS_INFO("Shutdown initiated.");
-			// User wants to terminate, should abort ASAP
-			// This should be caught by callers and handled appropriately
-			throw ManualShutdownException();
-		}
-
-		if (check(target)) {
-			DARKS_TRACE(fmt::format("Inventory {} state successfully changed on iteration {:d}.", ToString(target), accum_timeout / info.interval));
-			// Only return true if open, otherwise continue to next iteration
-			return true;
-		}
+bool InventoryController::TransferAll(Inventory transfer_to) {
+	// Both the self and other inventory must be open for a transfer to occur
+	if (!IsOpen(Inventory::Other)) {
+		DARKS_WARN("Cannot transfer all items, other inventory not open!");
+		return false;
 	}
-	DARKS_TRACE(fmt::format("Inventory {} state change checker timedout, returning false as in failed.", ToString(target)));
-	// Failed to open invent
-	return false;
+	// If the other invent is open, then the self automatically is as well
+
+	switch (transfer_to) {
+	case Inventory::Self:
+		// Click transfer all in other inventory to move all items into self
+		mouse_controller_.Click(conf_.other_to_self_pixel_.pos);
+		break;
+	case Inventory::Other:
+		// Click transfer all in self inventory to move all items into other
+		mouse_controller_.Click(conf_.self_to_other_pixel_.pos);
+		break;
+	default:
+		throw std::invalid_argument(fmt::format("The provided inventory argument of {:d} is invalid.", static_cast<int>(transfer_to)));
+	}
+
+	// If reached, operation successful
+	return true;
 }
