@@ -174,3 +174,16 @@ An interface that when implemented provides a means for the Autonomous mode work
   - If failed to open crate, look down for *n* seconds, continue to **#Open-Crate** again
 - If crate inventory not open, exit
 - **#Transfer**, take items from 
+
+## Cross Server State Requirements
+
+- Controller needs to know if it must transfer to another server for the current job
+- Should ping other server before attempting to transfer to ensure a valid target
+- Should we separate controller impl by map type and server number?
+  - I think we should allow for each server to have unique controllers incase impl must vary
+  - We should have generics available
+  - Inheritance or Composition?
+- We need a controller for transfering servers?
+  - Do we transfer the character or just login to one already there?
+  - Using last joined session won't completely work here, however we can use it to get to the server listing page
+
