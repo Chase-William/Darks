@@ -1,6 +1,8 @@
 {
   "dependencies": [
     "spdlog",
-	"dpp"
+	"dpp",
+	{ "name": "imgui", "features": [ "win32-binding", "dx11-binding" ]},
+	"cpr"
   ]
 }
