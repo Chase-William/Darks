@@ -5,6 +5,8 @@
 #include "../Log.h"
 
 namespace Darks::Controller {
+	const std::string MovementConfig::URL_SUBDIRECTORY_NAME = "movement";
+
 	void MovementController::Move(SyncInfo& info, Movement direction, int for_duration) const {		
 		assert(for_duration >= 50);
 

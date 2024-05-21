@@ -6,6 +6,7 @@
 
 // IO
 #include "io/Pixel.h"
+#include "io/Resolution.h"
 #include "io/Window.h"
 #include "io/Screen.h"
 #include "io/VirtualInput.h"
@@ -26,6 +27,7 @@
 #include "controller/KeyboardController.h"
 #include "controller/MovementController.h"
 #include "controller/CameraController.h"
+#include "controller/CameraDirection.h"
 #include "controller/InventoryController.h"
 #include "controller/SpawnController.h"
 #include "controller/SuicideController.h"
@@ -33,14 +35,11 @@
 #include "controller/ServerController.h"
 #include "controller/TribeLogController.h"
 #include "controller/IdleController.h"
-#include "controller/AutoClickerController.h"
-#include "controller/AutoClickerController.h"
 #include "controller/DisplayController.h"
 
 // UI
 #include "ui/DarksImguiWindow.h"
 #include "ui/AutonomousModeWindow.h"
-#include "ui/ManualModeWindow.h"
 
 // Foundation
 #include "GlobalTimerManager.h"
@@ -48,6 +47,6 @@
 #include "DarksDiscord.h"
 #include "AutonomousWorker.h"
 #include "OverlayWindowBase.h"
-#include "DarkArksApp.h"
+#include "DarksApp.h"
 
 #endif

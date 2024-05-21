@@ -5,6 +5,12 @@
 #include "imgui.h"
 
 namespace Darks::Controller {
+	const std::string ServerConfig::URL_SUBDIRECTORY_NAME = "server";
+
+	const int MAX_SELECT_SERVER_ATTEMPTS = 5;
+	const int MAX_CLICK_JOIN_BTN_ATTEMPTS = 5;
+	const int MAX_CLICK_JOIN_SERVER_POPUP_ATTEMPTS = 5;
+
 	ServerController::ServerController(
 		ServerConfig conf
 	) :
@@ -16,7 +22,7 @@ namespace Darks::Controller {
 
 		// Even though we are not joining the last session
 		// we can still use it to navigate to the server listing screen
-		mouse_controller_.Click(conf_.join_last_session_btn_);
+		mouse_controller_.Click(conf_.join_last_session_btn_pos_);
 		info.Wait(10000);
 
 		// Focus the searhbar
@@ -29,7 +35,7 @@ namespace Darks::Controller {
 		// Enter server identifer
 		keyboard_controller_.Keystrokes(server_id);
 
-		for (int select_attempts = 0; select_attempts < conf_.select_server_attempts_; select_attempts++) {
+		for (int select_attempts = 0; select_attempts < MAX_SELECT_SERVER_ATTEMPTS; select_attempts++) {
 			// Attempt to select the server
 			mouse_controller_.Click(conf_.select_server_pixel_.pos);
 			info.Wait(500);
@@ -77,17 +83,17 @@ namespace Darks::Controller {
 
 	void ServerController::ClickJoinButtons(SyncInfo& info) const {
 		// Attempt to click the server listing join button multiple times
-		for (int join_btn_attempts = 0; join_btn_attempts < conf_.join_btn_attempts_; join_btn_attempts++) {
+		for (int join_btn_attempts = 0; join_btn_attempts < MAX_CLICK_JOIN_BTN_ATTEMPTS; join_btn_attempts++) {
 			// Click join
-			mouse_controller_.Click(conf_.join_btn_);
+			mouse_controller_.Click(conf_.join_btn_pos_);
 			info.Wait(7500);
 			// Presentation of the popup indicates success
 			if (IsPopupPresent()) {
 				DARKS_INFO("Server join popup successfully presented.");
 				// Attempt to click the popup's join button multiple times
-				for (int popup_join_attempts = 0; popup_join_attempts < conf_.popup_join_attempts_; popup_join_attempts++) {
+				for (int popup_join_attempts = 0; popup_join_attempts < MAX_CLICK_JOIN_SERVER_POPUP_ATTEMPTS; popup_join_attempts++) {
 					// Click join
-					mouse_controller_.Click(conf_.popup_join_btn_.pos);
+					mouse_controller_.Click(conf_.popup_join_btn_pixel_.pos);
 					info.Wait(750);
 					// If the popup disappears, success
 					if (!IsPopupPresent()) {

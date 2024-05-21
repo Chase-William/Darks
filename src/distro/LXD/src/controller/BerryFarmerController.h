@@ -82,8 +82,8 @@ namespace LXD::Controller {
 			});
 		}
 
-		inline bool RunOnAutonomousStartup() const { return conf_.run_on_autonomous_startup_; }
-		inline bool IsRecurring() const { return conf_.is_recurring_; }
+		inline bool RunOnStartup() const override { return conf_.run_on_autonomous_startup_; }
+		inline bool IsRecurring() const override { return conf_.is_recurring_; }
 
 	private:
 		BerryFarmerConfig conf_;

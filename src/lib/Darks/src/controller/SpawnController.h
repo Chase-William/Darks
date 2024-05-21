@@ -8,6 +8,7 @@
 #include "MouseController.h"
 #include "KeyboardController.h"
 #include "../SyncInfo.h"
+#include "ILoadable.h"
 
 namespace Darks::Controller {
 	enum SpawnScreen {
@@ -19,23 +20,47 @@ namespace Darks::Controller {
 		return static_cast<SpawnScreen>(v1 + v2);
 	}
 
-	class SpawnConfig {
+	class SpawnConfig : public ILoadable {
 	public:
+		static const std::string URL_SUBDIRECTORY_NAME;
+
 		// spawn button
-		IO::Point spawn_btn_pos = { 2220, 1280 };
-		// location of the top most bed from query results
-		IO::Pixel bed_of_interest_pixel = IO::Pixel({ 660, 270 }, IO::Color(83, 39, 1));
+		IO::Point spawn_btn_pos_ = { 0, 0 };
 
 		// Searchbar
-		IO::Point death_screen_searchbar_pos = { 270, 1285 };
-		IO::Point fast_travel_screen_searchbar_pos = { 550, 1285 };
+		IO::Point death_screen_searchbar_pos_ = { 0, 0 };
+		IO::Point fast_travel_screen_searchbar_pos_ = { 0, 0 };
 
+		// location of the top most bed from query results
+		IO::Pixel select_bed_pixel_ = IO::Pixel({ 0, 0 }, IO::Color(0, 0, 0));
 		// Using the "S" character in beds because they do not overlap, and are not white (the default load in bg color)
-		IO::Pixel fast_travel_screen_pixel_ = IO::Pixel({ 475, 220 }, IO::Color(193, 245, 255));
-		IO::Pixel death_screen_pixel_ = IO::Pixel({ 585, 220 }, IO::Color(193, 245, 255));
+		IO::Pixel fast_travel_screen_open_pixel_ = IO::Pixel({ 0, 0 }, IO::Color(0, 0, 0));
+		IO::Pixel death_screen_open_pixel_ = IO::Pixel({ 0, 0 }, IO::Color(0, 0, 0));
 
-		int bed_select_attempts_ = 2;
+		inline std::string GetUrl() const override {
+			return std::string(GetServiceState().GetBaseUrl() + "/" + URL_SUBDIRECTORY_NAME);
+		}
 	};
+
+	static void to_json(nlohmann::json& json, const SpawnConfig& conf) {
+		json = nlohmann::json({
+			{ "spawn_btn_pos", conf.spawn_btn_pos_ },
+			{ "death_screen_searchbar_pos", conf.death_screen_searchbar_pos_ },
+			{ "fast_travel_screen_searchbar_pos", conf.fast_travel_screen_searchbar_pos_ },
+			{ "select_bed_pixel", conf.select_bed_pixel_ },
+			{ "fast_travel_screen_open_pixel", conf.fast_travel_screen_open_pixel_ },
+			{ "death_screen_open_pixel", conf.death_screen_open_pixel_ }
+		});
+	}
+
+	static void from_json(const nlohmann::json& json, SpawnConfig& conf) {
+		json.at("spawn_btn_pos").get_to(conf.spawn_btn_pos_);
+		json.at("death_screen_searchbar_pos").get_to(conf.death_screen_searchbar_pos_);
+		json.at("fast_travel_screen_searchbar_pos").get_to(conf.fast_travel_screen_searchbar_pos_);
+		json.at("select_bed_pixel").get_to(conf.select_bed_pixel_);
+		json.at("fast_travel_screen_open_pixel").get_to(conf.fast_travel_screen_open_pixel_);
+		json.at("death_screen_open_pixel").get_to(conf.death_screen_open_pixel_);
+	}
 
 	class SpawnController : public ICheckable {
 	public:
@@ -83,15 +108,15 @@ namespace Darks::Controller {
 		KeyboardController keyboard_controller_{};
 
 		bool IsDeathScreenOpen() const {
-			return Darks::IO::Screen::GetPixelColor(conf_.death_screen_pixel_.pos) == conf_.death_screen_pixel_.color;
+			return Darks::IO::Screen::GetPixelColor(conf_.death_screen_open_pixel_.pos) == conf_.death_screen_open_pixel_.color;
 		}
 
 		bool IsFastTravelScreenOpen() const {
-			return Darks::IO::Screen::GetPixelColor(conf_.fast_travel_screen_pixel_.pos) == conf_.fast_travel_screen_pixel_.color;
+			return Darks::IO::Screen::GetPixelColor(conf_.fast_travel_screen_open_pixel_.pos) == conf_.fast_travel_screen_open_pixel_.color;
 		}
 
 		bool IsBedSelected() const {
-			return Darks::IO::Screen::GetPixelColor(conf_.bed_of_interest_pixel.pos) == conf_.bed_of_interest_pixel.color;
+			return Darks::IO::Screen::GetPixelColor(conf_.select_bed_pixel_.pos) == conf_.select_bed_pixel_.color;
 		}
 	};
 }

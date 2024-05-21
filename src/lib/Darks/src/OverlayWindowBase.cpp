@@ -9,8 +9,7 @@
 #include "imgui_impl_dx11.h"
 
 namespace Darks {
-	OverlayWindowBase::OverlayWindowBase(DarkArksApp& app) :
-		app_(app)
+	OverlayWindowBase::OverlayWindowBase()
 	{ }
 
 	/// <summary>
@@ -126,7 +125,9 @@ namespace Darks {
 		ImFont* hud_font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf", 40.0f);
 
 		// Call the app's init function
-		app_.Init(hwnd_, *dispatcher_, hud_font);
+		// app_.Init(hwnd_, *dispatcher_, hud_font);
+		if (on_init)
+			on_init(hwnd_, *dispatcher_);
 
 		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 0.00f);
 
@@ -153,7 +154,9 @@ namespace Darks {
 			{
 				if (msg.message == WM_HOTKEY) {
 					// Propogate hotkey pressed
-					app_.OnHotKeyPressed(msg.wParam);
+					//app_.OnHotKeyPressed(msg.wParam);
+					if (on_hotkey_pressed)
+						on_hotkey_pressed(msg.wParam);
 				}
 
 				TranslateMessage(&msg);
@@ -193,8 +196,9 @@ namespace Darks {
 				0.5f
 			);*/
 
-			app_.OnUpdate();
-
+			// app_.OnUpdate();
+			if (on_update)
+				on_update();
 
 			// Rendering
 			ImGui::Render();
@@ -207,7 +211,9 @@ namespace Darks {
 			//g_pSwapChain->Present(0, 0); // Present without vsync
 		}
 
-		app_.OnShutdown();
+		if (on_shutdown)
+			on_shutdown();
+		// app_.OnShutdown();
 
 		// Cleanup
 		ImGui_ImplDX11_Shutdown();

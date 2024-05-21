@@ -3,6 +3,8 @@
 #include "../Log.h"
 
 namespace Darks::Controller {
+	const std::string SuicideConfig::URL_SUBDIRECTORY_NAME = "suicide";
+
 	SuicideController::SuicideController(
 		SuicideConfig conf,
 		SpawnController& spawn_controller,
@@ -11,7 +13,7 @@ namespace Darks::Controller {
 		conf_(conf),
 		spawn_controller_(spawn_controller),
 		inventory_controller_(inventory_controller)
-	{ }
+	{ }	
 
 	bool SuicideController::Suicide(
 		SyncInfo& info,

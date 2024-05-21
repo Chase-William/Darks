@@ -33,6 +33,22 @@ namespace Darks {
 		const char* msg_;
 	};
 
+	class AutonomousSoftResetRequiredException : public std::exception {
+	public:
+		AutonomousSoftResetRequiredException(const char* msg) :
+			msg_(msg)
+		{
+			msg_ = std::format("The player operating in autonomous mode reach a deadlock in state attempting a soft reset. Message from source: {}", msg_).c_str();
+		}
+
+		const char* what() {
+			return msg_;
+		}
+
+	private:
+		const char* msg_;
+	};
+
 	/// <summary>
 	/// Implement to sleep a thread with interval based in-game state checks and manual shutdown checks.
 	/// </summary>

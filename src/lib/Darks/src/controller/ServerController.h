@@ -12,27 +12,60 @@
 #include "MouseController.h"
 #include "KeyboardController.h"
 #include "IDisplayCtrlPanel.h"
+#include "ILoadable.h"
 
 namespace Darks::Controller {
-	class ServerConfig {
+	class ServerConfig : public ILoadable {
 	public:
-		IO::Key console_toggle_ = IO::Key::Tab;
+		static const std::string URL_SUBDIRECTORY_NAME;
 
-		IO::Point join_last_session_btn_ = { 1280, 1270 };
-		IO::Point join_btn_ = { 2285, 1260 };
-		IO::Pixel popup_join_btn_ = IO::Pixel({ 525, 1250 }, IO::Color(135, 79, 23)); // Btn not hovered color
-		IO::Point searchbar_pos_ = { 2200, 260 };
-		IO::Pixel select_server_pixel_ = IO::Pixel({ 2160, 430 }, IO::Color(83, 39, 1));
-		IO::Pixel disconnect_btn_pixel = IO::Pixel({ 1178, 843 }, IO::Color(134, 234, 255));
+		// IO::Key console_toggle_ = IO::Key::Tab;
 
-		int select_server_attempts_ = 5;
-		int join_btn_attempts_ = 5;
-		int popup_join_attempts_ = 5;
+		IO::Point join_last_session_btn_pos_ = { 0, 0 };
+		IO::Point join_btn_pos_ = { 0, 0 };
+		IO::Point searchbar_pos_ = { 0, 0 };
 
-		static const int server_id_max_size_ = 5;
-		char target_server_id_[server_id_max_size_] = { '2', '1', '3', '4', '\0' };
+		IO::Pixel popup_join_btn_pixel_ = IO::Pixel({ 0, 0 }, IO::Color(0, 0, 0)); // Btn not hovered color
+		IO::Pixel select_server_pixel_ = IO::Pixel({ 0, 0 }, IO::Color(0, 0, 0));
+		IO::Pixel disconnect_btn_pixel_ = IO::Pixel({ 0, 0 }, IO::Color(0, 0, 0));		
+
+		// static const int server_id_max_size_ = 5;
+		// char target_server_id_[server_id_max_size_] = { '2', '1', '3', '4', '\0' };
+		std::string target_server_ = "";
 		bool join_last_server_ = true;
+
+		inline std::string GetUrl() const override {
+			return std::string(GetServiceState().GetBaseUrl() + "/" + URL_SUBDIRECTORY_NAME);
+		}
 	};
+
+	static void to_json(nlohmann::json& json, const ServerConfig& conf) {
+		json = nlohmann::json({
+			{ "join_last_session_btn_pos", conf.join_last_session_btn_pos_ },
+			{ "join_btn_pos", conf.join_btn_pos_ },
+			{ "searchbar_pos", conf.searchbar_pos_ },
+			{ "popup_join_btn_pixel", conf.popup_join_btn_pixel_ },
+			{ "select_server_pixel", conf.select_server_pixel_ },
+			{ "disconnect_btn_pixel", conf.disconnect_btn_pixel_ }
+		});
+	}
+
+	static void from_json(const nlohmann::json& json, ServerConfig& conf) {
+		auto& machine = json.at("machine");
+
+		machine.at("target_server").get_to(conf.target_server_);
+		machine.at("join_last_server").get_to(conf.join_last_server_);
+
+		auto& resolution = json.at("resolution");
+
+		resolution.at("join_last_session_btn_pos").get_to(conf.join_last_session_btn_pos_);
+		resolution.at("join_btn_pos").get_to(conf.join_btn_pos_);
+		resolution.at("searchbar_pos").get_to(conf.searchbar_pos_);
+
+		resolution.at("popup_join_btn_pixel").get_to(conf.popup_join_btn_pixel_);
+		resolution.at("select_server_pixel").get_to(conf.select_server_pixel_);
+		resolution.at("disconnect_btn_pixel").get_to(conf.disconnect_btn_pixel_);
+	}
 
 	class ServerController : public IDisplayCtrlPanel {
 	public:
@@ -51,7 +84,7 @@ namespace Darks::Controller {
 		/// <param name="info"></param>
 		inline void JoinLast(SyncInfo& info) const {
 			DARKS_INFO("Attempting to join the last played server.");
-			mouse_controller_.Click(conf_.join_last_session_btn_);
+			mouse_controller_.Click(conf_.join_last_session_btn_pos_);
 			info.Wait(7500);
 			ClickJoinButtons(info);
 		}
@@ -83,7 +116,7 @@ namespace Darks::Controller {
 		}
 
 		inline bool IsDisconnectButtonVisible() const {
-			return IO::Screen::GetPixelColor(conf_.disconnect_btn_pixel.pos) == conf_.disconnect_btn_pixel.color;
+			return IO::Screen::GetPixelColor(conf_.disconnect_btn_pixel_.pos) == conf_.disconnect_btn_pixel_.color;
 		}
 
 		void DisplayCtrlPanel() override;
@@ -132,7 +165,7 @@ namespace Darks::Controller {
 		void ClickJoinButtons(SyncInfo& info) const;
 
 		inline bool IsPopupPresent() const {
-			return IO::Screen::GetPixelColor(conf_.popup_join_btn_.pos) == conf_.popup_join_btn_.color;
+			return IO::Screen::GetPixelColor(conf_.popup_join_btn_pixel_.pos) == conf_.popup_join_btn_pixel_.color;
 		}
 
 		inline void Run(SyncInfo& info, std::string server_id = "", bool join_last = false) const {

@@ -3,29 +3,37 @@
 
 #include "Framework.h"
 
+#include <functional>
 #include <d3d11.h>
 #include <dwmapi.h>
 
-#include "DarkArksApp.h"
+#include <imgui_impl_dx11.h>
+
 #include "MainThreadDispatcher.h"
 
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-namespace Darks {
+namespace Darks {	
+
 	class OverlayWindowBase
 	{
 	public:
 		/// <summary>
 		/// Creates an overlay app instance.
 		/// </summary>
-		OverlayWindowBase(DarkArksApp& app);
+		OverlayWindowBase();
 
 		void Start();
 
+		std::function<void(HWND hwnd, MainThreadDispatcher& main_thread_dispatcher)> on_init;
+		std::function<void()> on_update;
+		std::function<void(int id)> on_hotkey_pressed;
+		std::function<void()> on_shutdown;
+
 	private:
 		// User defined app data
-		DarkArksApp& app_;
+		// DarksApp& app_;
 		std::unique_ptr<MainThreadDispatcher> dispatcher_;
 
 		// Window data

@@ -1,17 +1,11 @@
 #ifndef DARKS_CONTROLLERS_CAMERACONTROLLER_H_
 #define DARKS_CONTROLLERS_CAMERACONTROLLER_H_
 
+#include "CameraDirection.h"
 #include "KeyboardController.h"
 #include "../SyncInfo.h"
 
 namespace Darks::Controller {
-	enum class CameraDirection {
-		Left,
-		Up,
-		Right,
-		Down,
-	};
-
 	class CameraConfig {
 	public:
 		IO::Key look_left_ = IO::Key::LeftArrow;

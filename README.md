@@ -187,3 +187,78 @@ An interface that when implemented provides a means for the Autonomous mode work
   - Do we transfer the character or just login to one already there?
   - Using last joined session won't completely work here, however we can use it to get to the server listing page
 
+
+
+### Services
+
+- Should not need to provide the bearer token manually upon each request.
+- A `Controller`'s `Config` object should have *load* and *save* functions:
+  - *Load(...)*, Requests a new configuration from the remote.
+  - *Save(...)*, Requests modifications be reflected in remote.
+- A *Login* function should be available to quickly login a user with their provided *user_token*.
+- On launch, the application should be able to create a collection of all desired configurations in parallel. From these configurations, all controllers should be created.
+- If the *Bearer Token* expires, automatically re-login the user using the *user_token* from file if it exists. Should request *hwid* again when re-authenticating.
+  - If it does not, launch another version of darks and terminate the current *(probably easier/safer than resetting everything)*.
+  - If re-authentication fails, launch another version of darks and terminate the current.
+
+### Application Startup
+
+1. Display window asking for *user_token* if file containing *user_token* doesn't already exists.
+2. If login failed, show error message.
+   1. If unsupported resolution, terminate Darks.
+   2. If failed login, ask for *user_token* again.
+3. If login successful, show control panel(s).
+
+
+### `LootCrateFarmController`
+
+- *OnRun()* is called to create the crate station objects when running the controller.
+
+
+
+### Controller Creation
+
+- Allow certain standard library controllers to be omitted from creation as the user will not be utilizing them.
+- Create all standard library controllers before creating user specific.
+- Controllers that are default contructable and therefore do not require a config, should be created first.
+
+### Discord Integration
+
+
+- **WebHook**, A discord integrated webhook.
+    - Stores a URL
+    - References a Machine
+    - References an Account
+- **Discord Bot**, A discord bot.
+    - Stores a discord bot token
+    - References a Machine
+    - References an Account
+- **OutputChannels**, A discord channel a bot uses to post updates from a controller to.
+    - References a discord bot
+    - Stores a channel id
+    - ? Do we need a guild id ?
+
+A `Controller` has a *OutputChannels* property which is a collection of available outputs for given events.
+
+#### Output Types
+
+- `IOutputable`, An interface representing a type that can serve as an output.
+- `DiscordChannel`, Represents a discord channel as output.
+- `DiscordWebHook`, Represents a discord webhook as output.
+
+```cpp
+class IOutputable {
+public:
+    virtual void Send() = 0;
+};
+
+class DiscordChannel : public IOutputable {
+public:
+};
+
+class DiscordWebHook : public IOutputable {
+public:
+};
+```
+
+Can we allow the user to use a command like `/set output crates` to use the current channel for outputting messages from that controller to.

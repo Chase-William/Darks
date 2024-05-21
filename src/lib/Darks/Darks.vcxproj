@@ -135,6 +135,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;5260;4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -156,6 +157,7 @@
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>
       </AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4251;5260;4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -166,9 +168,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\controller\CameraDirection.h" />
+    <ClInclude Include="src\controller\crate\navigator\INavigateable.h" />
+    <ClInclude Include="src\controller\crate\station\CrateStation.h" />
+    <ClInclude Include="src\controller\crate\Crate.h" />
+    <ClInclude Include="src\controller\crate\station\DefaultCrateStation.h" />
+    <ClInclude Include="src\controller\crate\LootCrateFarmController.h" />
+    <ClInclude Include="src\ui\LoginWindow.h" />
+    <ClInclude Include="src\ServiceContext.h" />
+    <ClInclude Include="src\io\Resolution.h" />
     <ClInclude Include="src\AutonomousWorker.h" />
-    <ClInclude Include="src\controller\AutoClickerController.h" />
-    <ClInclude Include="src\controller\AutoWalkerController.h" />
     <ClInclude Include="src\controller\CameraController.h" />
     <ClInclude Include="src\controller\DisplayController.h" />
     <ClInclude Include="src\controller\GeneralController.h" />
@@ -189,7 +198,7 @@
     <ClInclude Include="src\controller\SpawnController.h" />
     <ClInclude Include="src\controller\SuicideController.h" />
     <ClInclude Include="src\controller\TribeLogController.h" />
-    <ClInclude Include="src\DarkArksApp.h" />
+    <ClInclude Include="src\DarksApp.h" />
     <ClInclude Include="src\Darks.h" />
     <ClInclude Include="src\DarksDiscord.h" />
     <ClInclude Include="src\Framework.h" />
@@ -207,12 +216,20 @@
     <ClInclude Include="src\SyncInfo.h" />
     <ClInclude Include="src\ui\AutonomousModeWindow.h" />
     <ClInclude Include="src\ui\DarksImguiWindow.h" />
-    <ClInclude Include="src\ui\ManualModeWindow.h" />
+    <ClInclude Include="src\controller\crate\navigator\SwanDiveNavigator.h" />
+    <ClInclude Include="src\ui\Wrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\controller\crate\Crate.cpp" />
+    <ClCompile Include="src\controller\crate\station\CrateStation.cpp" />
+    <ClCompile Include="src\controller\crate\station\DefaultCrateStation.cpp" />
+    <ClCompile Include="src\controller\crate\LootCrateFarmController.cpp" />
+    <ClCompile Include="src\controller\ILoadable.cpp" />
+    <ClCompile Include="src\controller\ILoadable.h" />
+    <ClCompile Include="src\ui\LoginWindow.cpp" />
+    <ClCompile Include="src\ServiceContext.cpp" />
+    <ClCompile Include="src\io\Resolution.cpp" />
     <ClCompile Include="src\AutonomousWorker.cpp" />
-    <ClCompile Include="src\controller\AutoClickerController.cpp" />
-    <ClCompile Include="src\controller\AutoWalkerController.cpp" />
     <ClCompile Include="src\controller\CameraController.cpp" />
     <ClCompile Include="src\controller\DisplayController.cpp" />
     <ClCompile Include="src\controller\IdleController.cpp" />
@@ -226,7 +243,7 @@
     <ClCompile Include="src\controller\SpawnController.cpp" />
     <ClCompile Include="src\controller\SuicideController.cpp" />
     <ClCompile Include="src\controller\TribeLogController.cpp" />
-    <ClCompile Include="src\DarkArksApp.cpp" />
+    <ClCompile Include="src\DarksApp.cpp" />
     <ClCompile Include="src\Darks.cpp" />
     <ClCompile Include="src\DarksDiscord.cpp" />
     <ClCompile Include="src\GlobalTimerManager.cpp" />
@@ -239,7 +256,8 @@
     <ClCompile Include="src\SyncInfo.cpp" />
     <ClCompile Include="src\ui\AutonomousModeWindow.cpp" />
     <ClCompile Include="src\ui\DarksImguiWindow.cpp" />
-    <ClCompile Include="src\ui\ManualModeWindow.cpp" />
+    <ClCompile Include="src\controller\crate\navigator\SwanDiveNavigator.cpp" />
+    <ClCompile Include="src\ui\Wrapper.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

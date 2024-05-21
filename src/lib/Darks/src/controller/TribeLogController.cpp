@@ -1,6 +1,21 @@
 #include "TribeLogController.h"
 
+#include "../ui/Wrapper.h"
+
 namespace Darks::Controller {
+	const std::string TribeLogConfig::URL_SUBDIRECTORY_NAME = "tribe-log";
+
+	const int TRIBE_LOG_POLL_INTERVAL = 60000;
+
+	TribeLogController::TribeLogController(
+		TribeLogConfig conf
+	) :
+		conf_(conf)
+	{
+		// Copy the remote webhook url into the web hook url modifiable field for the user
+		post_logs_edit_ = conf.post_logs_webhook_;
+	}
+
 	bool TribeLogController::OpenTribeLog(SyncInfo& info, int wait_for_tribe_log_open_poll_interval, int wait_for_tribe_log_open_timeout) const {
 		DARKS_INFO("Attempting to open tribe log.");
 		if (IsTribeLogOpen()) {
@@ -33,13 +48,34 @@ namespace Darks::Controller {
 	}
 
 	void TribeLogController::DisplayCtrlPanel() {
-		ImGui::Text("Tribe Log Controller Text");
-		/*if (ImGui::Button("Get Tribelog")) {
-			GetScreenshot();
-		}*/
+		if (ImGui::TreeNode("Tribe Log Logging Configuration")) {
+			if (is_editing_) {
+				if (ImGui::Button("Save")) {
+					conf_.Save(post_logs_edit_);
+					is_editing_ = false;
+					ImGui::TreePop();
+					return;
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Cancel")) {
+					post_logs_edit_ = conf_.post_logs_webhook_;
+					is_editing_ = false;
+				}
+				UI::InputText("Post Tribe-Logs Webhook", &post_logs_edit_);
+			}
+			else {
+				if (ImGui::Button("Edit")) {
+					is_editing_ = true;
+				}
+				ImGui::SameLine();
+				ImGui::Text(std::format("Using Webhook: {}", conf_.post_logs_webhook_.empty() ? "No" : "Yes").c_str());
+			}
+
+			ImGui::TreePop();
+		}		
 	}
 
-	bool TribeLogController::StartPollingTribeLogs(GlobalTimerManager& timer_manager) {
+	bool TribeLogController::StartPollingTribeLogs(GlobalTimerManager& timer_manager, std::function<void()> tribe_log_closed_unexpectedly_handler_) {
 		// Prevent resource leak by accidental overwriting of timer_id_ 
 		if (timer_id_) {
 			DARKS_ERROR(std::format("Attempted to start polling tribe logs when already polling."));
@@ -47,13 +83,21 @@ namespace Darks::Controller {
 		}
 
 		// Register the farm callback on a repeating timer
-		auto result = timer_manager.Register([this, &timer_manager]() {
+		auto result = timer_manager.Register([this, &timer_manager, tribe_log_closed_unexpectedly_handler_]() {
 			if (this->on_log_) {
-				DARKS_INFO("Tribe Log Controller fired, capturing screenshot.");
-				this->on_log_(this->GetScreenshot());
+				DARKS_INFO("Tribe Log Controller fired, capturing screenshot and checking if character died while idle.");				
+
+				// Allow a listener to handle the tribe log closing unexpectedly (character probably died or something)
+				if (!IsTribeLogOpen()) {
+					DARKS_WARN("Tribe log unexpectedly closed.");
+					tribe_log_closed_unexpectedly_handler_();
+					return;
+				}
+
+				this->on_log_(this->GetScreenshot(), this->GetWebhookUrl());
 			}
-			},
-			conf_.tribe_log_poll_interval_);
+		},
+		TRIBE_LOG_POLL_INTERVAL);
 
 		if (result.has_value()) {
 			timer_id_ = result.value();

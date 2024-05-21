@@ -109,15 +109,13 @@ namespace LXD::Controller {
 			Darks::MainThreadDispatcher* const dispatcher = nullptr
 		) override;
 
-		inline bool RunOnAutonomousStartup() const { return conf_.run_on_autonomous_startup_;  }
-		inline bool IsRecurring() const { return conf_.is_recurring_; }
+		inline bool RunOnStartup() const override { return conf_.run_on_autonomous_startup_;  }
+		inline bool IsRecurring() const override { return conf_.is_recurring_; }
 
 		/// <summary>
 		/// Fires whenever a new loot crate has been opened automatically.
 		/// </summary>
 		std::function<void(const std::string& name, std::vector<char>& jpg_buf)> on_crate_;
-
-
 
 	private:
 		int timer_id_ = 0;

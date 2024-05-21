@@ -18,7 +18,7 @@
     <ClInclude Include="src\AutonomousWorker.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DarkArksApp.h">
+    <ClInclude Include="src\DarksApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\DarksDiscord.h">
@@ -37,12 +37,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\SyncInfo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\controller\AutoClickerController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\controller\AutoWalkerController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\controller\CameraController.h">
@@ -132,13 +126,43 @@
     <ClInclude Include="src\ui\DarksImguiWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ui\ManualModeWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Darks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\io\Resolution.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ServiceContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\LoginWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controller\crate\LootCrateFarmController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controller\crate\station\DefaultCrateStation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controller\crate\Crate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controller\crate\station\CrateStation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controller\crate\navigator\SwanDiveNavigator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controller\crate\navigator\INavigateable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controller\CameraDirection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\Wrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -149,7 +173,7 @@
     <ClCompile Include="src\AutonomousWorker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\DarkArksApp.cpp">
+    <ClCompile Include="src\DarksApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\DarksDiscord.cpp">
@@ -168,12 +192,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\SyncInfo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\controller\AutoClickerController.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\controller\AutoWalkerController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\controller\CameraController.cpp">
@@ -230,7 +248,37 @@
     <ClCompile Include="src\ui\DarksImguiWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ui\ManualModeWindow.cpp">
+    <ClCompile Include="src\io\Resolution.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ServiceContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\LoginWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\controller\ILoadable.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\controller\ILoadable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\controller\crate\LootCrateFarmController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\controller\crate\station\DefaultCrateStation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\controller\crate\station\CrateStation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\controller\crate\navigator\SwanDiveNavigator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\controller\crate\Crate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\Wrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

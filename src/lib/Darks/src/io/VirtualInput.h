@@ -7,6 +7,8 @@
 #include <string>
 #include <optional>
 
+#include "nlohmann/json.hpp"
+
 namespace Darks::IO {
 	/// <summary>
 	/// Checkout: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerhotkey
@@ -308,6 +310,34 @@ namespace Darks::IO {
 		OEMClear = 0xFE, //OEM Clear key
 	};
 
+	NLOHMANN_JSON_SERIALIZE_ENUM(Key, {
+		{ Key::A, "A" },
+		{ Key::B, "B" },
+		{ Key::C, "C" },
+		{ Key::D, "D" },
+		{ Key::E, "E" },
+		{ Key::F, "F" },
+		{ Key::G, "G" },
+		{ Key::H, "H" },
+		{ Key::I, "I" },
+		{ Key::J, "J" },
+		{ Key::K, "K" },
+		{ Key::L, "L" },
+		{ Key::M, "M" },
+		{ Key::N, "N" },
+		{ Key::O, "O" },
+		{ Key::P, "P" },
+		{ Key::Q, "Q" },
+		{ Key::R, "R" },
+		{ Key::S, "S" },
+		{ Key::T, "T" },
+		{ Key::U, "U" },
+		{ Key::V, "V" },
+		{ Key::W, "W" },
+		{ Key::X, "X" },
+		{ Key::Y, "Y" },
+		{ Key::Z, "Z" }		
+	});
 
 	static std::optional<Key> ParseKeyStr(std::string key_str) {
 		static bool initialized = false;

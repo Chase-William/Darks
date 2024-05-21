@@ -11,7 +11,7 @@
 namespace Darks::Controller {
 	class DisplayControllerConfig {
 	public:
-		IO::HotKey hotkey_ = { IO::Key::Num0 };
+		IO::HotKey hotkey_ = { IO::Key::F7 };
 	};
 
 	/// <summary>

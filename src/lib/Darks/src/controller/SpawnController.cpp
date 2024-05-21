@@ -6,16 +6,20 @@
 #include "../Log.h"
 
 namespace Darks::Controller {
+	const std::string SpawnConfig::URL_SUBDIRECTORY_NAME = "spawn";
+	
+	const int SELECT_BED_ATTEMPTS = 2;
+
 	SpawnController::SpawnController(SpawnConfig conf) :
 		conf_(conf)
 	{ }
 
 	bool SpawnController::Clear(SyncInfo& info) const {
 		if (IsFastTravelScreenOpen()) { // Click on fast travel searchbar
-			mouse_controller_.Click(conf_.fast_travel_screen_searchbar_pos);
+			mouse_controller_.Click(conf_.fast_travel_screen_searchbar_pos_);
 		}
 		else if (IsDeathScreenOpen()) { // Click on death screen searchbar
-			mouse_controller_.Click(conf_.death_screen_searchbar_pos);
+			mouse_controller_.Click(conf_.death_screen_searchbar_pos_);
 		}
 		else {
 			DARKS_WARN("Spawn screen not open.");
@@ -51,10 +55,10 @@ namespace Darks::Controller {
 		info.Wait(after_spawn_screen_visible);
 
 		if (IsFastTravelScreenOpen()) { // Click on fast travel searchbar
-			mouse_controller_.Click(conf_.fast_travel_screen_searchbar_pos);
+			mouse_controller_.Click(conf_.fast_travel_screen_searchbar_pos_);
 		}
 		else if (IsDeathScreenOpen()) { // Click on death screen searchbar
-			mouse_controller_.Click(conf_.death_screen_searchbar_pos);
+			mouse_controller_.Click(conf_.death_screen_searchbar_pos_);
 		}
 		else {
 			DARKS_WARN("Spawn screen not open.");
@@ -69,9 +73,9 @@ namespace Darks::Controller {
 
 		// Select bed, with multiple attempts as sometimes a click doesn't register on the bed for some unknown reason
 		// Possibily the move to and click at destination can occur to fast for target, greatly reduces chance
-		for (int i = 0; i < conf_.bed_select_attempts_; i++) {
+		for (int i = 0; i < SELECT_BED_ATTEMPTS; i++) {
 			if (i == 0) { // First click moves mouse and clicks, move always works, however selection can fail at new location
-				mouse_controller_.Click(conf_.bed_of_interest_pixel.pos);
+				mouse_controller_.Click(conf_.select_bed_pixel_.pos);
 			}
 			else { // Incase bed selection failed for an unknown, probably lag related issue, just perform click again at already set location
 				mouse_controller_.Click();
@@ -89,7 +93,7 @@ namespace Darks::Controller {
 		}
 
 		// Click spawn button
-		mouse_controller_.Click(conf_.spawn_btn_pos);
+		mouse_controller_.Click(conf_.spawn_btn_pos_);
 		// Check if all varients of spawning screens have closed indicating the player is beginning to spawn
 		auto status = info.Wait(*this, wait_for_disappearance_of_spawn_screen_poll_interval, wait_for_disappearance_of_spawn_screen_timeout);
 		DARKS_INFO(std::format("{} in.", status ? "Successfully spawned" : "Failed to spawn"));

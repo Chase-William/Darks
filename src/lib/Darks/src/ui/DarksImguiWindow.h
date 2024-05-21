@@ -48,11 +48,16 @@ namespace Darks::UI {
 
 		static void Update(std::initializer_list<DarksImguiWindow*> windows);
 
+		void Collapse() { is_collapsed = true; }
+		void Expand() { is_collapsed = false; }
+
 	protected:
 		bool IsMouseOver();
 
 	private:
 		std::string window_name_;
+
+		bool is_collapsed = true;
 
 		static void EnableInteractivity();
 		static void DisableInteractivity();

@@ -6,6 +6,7 @@
 #include <exception>
 #include <cassert>
 #include <queue>
+#include <vector>
 
 #include "Log.h"
 #include "io/Window.h"
@@ -19,11 +20,12 @@
 #include "controller/IdleController.h"
 #include "controller/ProcessController.h"
 #include "controller/ServerController.h"
+#include "controller/TribeLogController.h"
 #include "MainThreadDispatcher.h"
 #include "SyncInfo.h"
 
 namespace Darks {
-	class QueueInfo {
+	/*class QueueInfo {
 	public:
 		QueueInfo(std::queue<std::function<void()>>& work_queue, std::mutex work_queue_mutex
 		) :
@@ -33,31 +35,34 @@ namespace Darks {
 
 		std::queue<std::function<void()>>& work_queue_;
 		std::mutex& work_queue_mutex_;
-	};
+	};*/
 
 	// Probably take a controller as the default as an option in the future
 
 	class AutonomousWorker {
 	public:
 		AutonomousWorker(
-			GlobalTimerManager& timer_manager,
-			Darks::Controller::InventoryController& inventory_controller,
-			Darks::Controller::SuicideController& suicide_controller,
-			Darks::Controller::SpawnController& spawn_controller,			
-			Darks::Controller::IdleController& idle_controller,
-			Darks::Controller::ProcessController& process_controller,
-			Darks::Controller::ServerController& server_controller,
-			MainThreadDispatcher& main_thread_dispatcher
+			GlobalTimerManager& timer_manager,			
+			MainThreadDispatcher& main_thread_dispatcher,
+			Controller::SuicideController& suicide_controller,
+			Controller::SpawnController& spawn_controller,
+			Controller::IdleController& idle_controller,
+			Controller::ProcessController& process_controller,
+			Controller::ServerController& server_controller,
+			Controller::TribeLogController& tribe_log_controller,
+			std::unique_ptr<std::vector<Controller::IQueueable*>> queueables
 		) :
 			timer_manager_(timer_manager),
-			inventory_controller_(inventory_controller),
 			suicide_controller_(suicide_controller),
 			spawn_controller_(spawn_controller),
 			idle_controller_(idle_controller),
 			process_controller_(process_controller),
 			server_controller_(server_controller),
+			tribe_log_controller_(tribe_log_controller),
 			main_thread_dispatcher_(main_thread_dispatcher)
-		{ }
+		{ 
+			queueables_ = std::move(queueables); // Take ownership of queueables via move
+		}
 
 		/// <summary>
 		/// Starts the autonomous worker.
@@ -66,11 +71,15 @@ namespace Darks {
 		void Start();
 		void Stop();
 
+		std::function<void()> on_started_;
+		std::function<void()> on_stopped_;
+
+		// std::function<void(bool is_running)> on_controller_run_once_state_changed_;
+
 		/// <summary>
 		/// Displays the control panel for the worker using imgui.
 		/// </summary>
-		/// <returns>True if the autonomous worker has requested UI components become hidden, false otherwise.</returns>
-		bool DisplayCtrlPanel();
+		void DisplayCtrlPanel();
 
 		bool IsRunning() { return !shutdown_; }
 
@@ -78,23 +87,39 @@ namespace Darks {
 		MainThreadDispatcher& GetDispatcher() const { return main_thread_dispatcher_; }
 
 	private:
-		std::string current_server_ = "2134"; // Currently we assume we are always starting on home server 2134
+		std::unique_ptr<std::vector<Controller::IQueueable*>> queueables_;
+
+		// std::string current_server_ = "2134"; // Currently we assume we are always starting on home server 2134
 
 		GlobalTimerManager& timer_manager_;
-		Darks::Controller::InventoryController& inventory_controller_;
-		Darks::Controller::SuicideController& suicide_controller_;
-		Darks::Controller::SpawnController& spawn_controller_;
-		Darks::Controller::IdleController& idle_controller_;
-		Darks::Controller::ProcessController& process_controller_;
-		Darks::Controller::ServerController& server_controller_;
-
 		MainThreadDispatcher& main_thread_dispatcher_;
 
-		std::thread thread_;
+		/*
+			Required controllers for autonomous mode to function
+		*/
+		Controller::SuicideController& suicide_controller_;
+		Controller::SpawnController& spawn_controller_;
+		Controller::IdleController& idle_controller_;
+		Controller::ProcessController& process_controller_;
+		Controller::ServerController& server_controller_;	
+		Controller::TribeLogController& tribe_log_controller_;
+		Controller::MouseController mouse_controller_{};
+
+		inline void SetIsRunning(bool value) {			
+			if (shutdown_ == !value)
+				return;
+			shutdown_ = !value;
+			if (shutdown_)
+				on_stopped_();
+			else
+				on_started_();			
+		}
 		std::atomic<bool> shutdown_{ true };
 
+		// Queue related synchronization objects
 		std::queue<Darks::Controller::IQueueable*> work_queue_;
 		std::mutex work_queue_mutex_{};
+		int error_code_ = 0;
 
 		// Main loop synchronization objects
 		std::mutex main_queue_loop_mutex_{};
@@ -106,6 +131,8 @@ namespace Darks {
 		/*SyncInfo controller_info = SyncInfo(shutdown_, controller_var_, controller_mutex_);
 		QueueSyncInfo queue_info = QueueSyncInfo(&work_queue_, work_queue_mutex_, main_queue_loop_var_);*/
 		std::unique_ptr<Darks::Controller::QueueSyncInfo> queue_info_;
+
+		void Cleanup();
 	};
 }
 

@@ -5,6 +5,8 @@
 #include "imgui.h"
 
 namespace Darks::Controller {
+	const std::string ProcessConfig::URL_SUBDIRECTORY_NAME = "process";
+
 	ProcessController::ProcessController(
 		ProcessConfig conf
 	) :
@@ -35,7 +37,9 @@ namespace Darks::Controller {
 
 		if (Process32First(snapshot, &entry)) // Check if first element in snapshot exist
 			while (Process32Next(snapshot, &entry)) // Iterate
-				if (!_wcsicmp(entry.szExeFile, conf_.process_name_)) {
+				if (!_wcsicmp(
+					entry.szExeFile, // Convert std::string to std::wstring for comparison
+					std::wstring(conf_.process_name_.begin(), conf_.process_name_.end()).c_str())) {
 					exists = true;
 					// If the optional param points somewhere valid, update it's value with the found proc id
 					if (proc_id)

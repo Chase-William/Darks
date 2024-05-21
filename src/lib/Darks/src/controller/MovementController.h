@@ -4,6 +4,7 @@
 #include "KeyboardController.h"
 #include "../io/VirtualInput.h"
 #include "../SyncInfo.h"
+#include "ILoadable.h"
 
 namespace Darks::Controller {
 	enum class Movement {
@@ -13,8 +14,10 @@ namespace Darks::Controller {
 		Right
 	};
 
-	class MovementConfig {
+	class MovementConfig : public ILoadable {
 	public:
+		static const std::string URL_SUBDIRECTORY_NAME;
+
 		IO::Key move_forward_ = IO::Key::W;
 		IO::Key move_backwards_ = IO::Key::S;
 		IO::Key move_left_ = IO::Key::A;
@@ -23,7 +26,31 @@ namespace Darks::Controller {
 		IO::Key swim_down_ = IO::Key::C;
 
 		IO::Key crouch_ = IO::Key::C;
+
+		inline std::string GetUrl() const override {
+			return std::string(GetServiceState().GetBaseUrl() + "/" + URL_SUBDIRECTORY_NAME);
+		}
 	};
+
+	static void to_json(nlohmann::json& json, const MovementConfig& conf) {
+		json = nlohmann::json({
+			{ "move_forward", conf.move_forward_ },
+			{ "move_backwards", conf.move_backwards_ },
+			{ "move_left", conf.move_left_ },
+			{ "move_right", conf.move_right_ },
+			{ "swim_down", conf.swim_down_ },
+			{ "crouch", conf.crouch_ },
+		});
+	}
+
+	static void from_json(const nlohmann::json& json, MovementConfig& conf) {
+		json.at("move_forward").get_to(conf.move_forward_);
+		json.at("move_backwards").get_to(conf.move_backwards_);
+		json.at("move_left").get_to(conf.move_left_);
+		json.at("move_right").get_to(conf.move_right_);
+		json.at("swim_down").get_to(conf.swim_down_);
+		json.at("crouch").get_to(conf.crouch_);
+	}
 
 	class MovementController {
 	public:

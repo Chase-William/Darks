@@ -1,20 +1,39 @@
 #ifndef DARKS_CONTROLLERS_SUICIDECONTROLLER_H_
 #define DARKS_CONTROLLERS_SUICIDECONTROLLER_H_
 
+#include "nlohmann/json.hpp"
+
 #include "../io/Pixel.h"
 #include "../SyncInfo.h"
 #include "InventoryController.h"
 #include "KeyboardController.h"
 #include "MouseController.h"
 #include "SpawnController.h"
+#include "ILoadable.h"
 
 namespace Darks::Controller {
-	class SuicideConfig {
+	class SuicideConfig : public ILoadable {
 	public:
-		Darks::IO::Point implant_pos_ = { 300, 370 };
+		static const std::string URL_SUBDIRECTORY_NAME;
+
+		Darks::IO::Point implant_pos_ = { 0, 0 };
 		int implant_ready_delay_ = 7000;
 		// Pixel suicide_cooldown_pixel = Pixel({ 580, 790 }, Color(255, 89, 89));
+
+		inline std::string GetUrl() const override {
+			return std::string(GetServiceState().GetBaseUrl() + "/" + URL_SUBDIRECTORY_NAME);
+		}
 	};
+
+	static void to_json(nlohmann::json& json, const SuicideConfig& conf) {
+		json = nlohmann::json({
+			{ "implant_pos", conf.implant_pos_ }
+		});
+	}
+
+	static void from_json(const nlohmann::json& json, SuicideConfig& conf) {
+		json.at("implant_pos").get_to(conf.implant_pos_);
+	}
 
 	class SuicideController : public ICheckable {
 	public:
