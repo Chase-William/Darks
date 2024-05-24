@@ -107,8 +107,8 @@ namespace Darks {
 
 					// Check if job is done
 					if (res.IsCancelled()) {
-						printf("asd");
-						// ------------------------------- error handle
+						MessageBoxA(NULL, "Fetching configuration data was cancelled.", "Error", MB_OK);
+						exit(0);
 					}
 
 					// Wait until this request is done
@@ -116,8 +116,8 @@ namespace Darks {
 
 					// Check status code123
 					if (result.status_code != 200) {
-						std::printf("");
-						// ------------------------------- error handle
+						MessageBoxA(NULL, std::format("Failed to acquire configuration data from server with: {}", result.text).c_str(), "Error", MB_OK);
+						exit(0);
 					}
 					
 					try {
@@ -188,10 +188,9 @@ namespace Darks {
 					catch (nlohmann::json::out_of_range ex) {
 						auto msg = ex.what();
 						DARKS_CRITICAL(msg);
-
-						// ------------------------------- error handle
+						MessageBoxA(NULL, std::format("Failed to create a standard library controller with ex: {}", msg).c_str(), "Error", MB_OK);
+						exit(0);
 					}																												
-
 				}				
 
 				DARKS_INFO("Finished Controller Initialization.");
