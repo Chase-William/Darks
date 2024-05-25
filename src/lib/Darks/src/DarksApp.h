@@ -18,6 +18,7 @@
 #include "controller/TribeLogController.h"
 #include "controller/ProcessController.h"
 #include "controller/ServerController.h"
+#include "controller/ParasaurAlarmController.h"
 #include "controller/crate/LootCrateFarmController.h"
 #include "io/GlobalKeyListener.h"
 #include "io/GlobalHotKeyManager.h"
@@ -108,6 +109,7 @@ namespace Darks {
 		// Window display controller
 		std::unique_ptr<Darks::Controller::DisplayController> display_controller_;
 		std::unique_ptr<Darks::Controller::TribeLogController> tribe_log_controller_;
+		std::unique_ptr<Darks::Controller::ParasaurAlarmController> parasaur_alarm_controller_;
 		std::unique_ptr<Darks::Controller::IdleController> idle_controller_;
 
 		/*

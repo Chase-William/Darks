@@ -19,6 +19,8 @@ namespace Darks::Controller {
 		Darks::IO::Pixel tribe_log_open_pixel_ = IO::Pixel({ 0, 0 }, IO::Color(0, 0, 0));
 		Darks::IO::Rect tribe_log_screenshot_rect_ = IO::Rect(0, 0, 0, 0);
 
+		bool enabled_ = true;
+
 		/// <summary>
 		/// The web hook to post tribe logs to; shouldn't be longer than 128 characters.
 		/// </summary>
@@ -29,10 +31,12 @@ namespace Darks::Controller {
 		}
 
 		inline void Save(
-			std::string post_logs_webhook
+			std::string post_logs_webhook,
+			bool enabled
 		) {
 			nlohmann::json j{
-				{ "post_logs_webhook", post_logs_webhook }
+				{ "post_logs_webhook", post_logs_webhook },
+				{ "enabled", enabled }
 			};
 
 			auto res = cpr::PostCallback([](cpr::Response res) {
@@ -51,7 +55,9 @@ namespace Darks::Controller {
 				j.dump()
 			});
 			
+			// Update config
 			post_logs_webhook_ = post_logs_webhook;
+			enabled_ = enabled;
 		}
 	};
 
@@ -118,8 +124,8 @@ namespace Darks::Controller {
 			}
 		}
 
-		bool StartPollingTribeLogs(GlobalTimerManager& timer_manager, std::function<void()> tribe_log_closed_unexpectedly_handler_);
-		bool StopPollingTribeLogs(GlobalTimerManager& timer_manager);
+		/*bool StartPollingTribeLogs(GlobalTimerManager& timer_manager, std::function<void()> tribe_log_closed_unexpectedly_handler_);
+		bool StopPollingTribeLogs(GlobalTimerManager& timer_manager);*/
 
 		/// <summary>
 		/// Fires whenever a new screenshot of tribe log has been captured automatically.
@@ -128,6 +134,18 @@ namespace Darks::Controller {
 
 		inline const std::string& GetWebhookUrl() const { return conf_.post_logs_webhook_; }
 
+		inline bool IsEnabled() const { return conf_.enabled_; }
+
+		inline void PostTribeLogs() const {
+			if (this->on_log_) {
+				DARKS_INFO("Taking a screenshot of tribe logs.");
+				this->on_log_(this->GetScreenshot(), this->GetWebhookUrl());
+			}
+			else {
+				DARKS_WARN("PostTribeLogs was called, however there are no subscribers listening to tribe log events, therefore capturing a screenshot of tribe log has been skipped.");
+			}
+		}
+
 	private:
 		const int WAIT_UNTIL_TRIBE_LOG_CLOSED_CODE = 10000;
 
@@ -135,6 +153,7 @@ namespace Darks::Controller {
 		KeyboardController keyboard_controller_{};
 
 		bool is_editing_ = false;
+		bool enabled_edit_ = true;
 		std::string post_logs_edit_ = "";
 
 		int timer_id_ = 0;
