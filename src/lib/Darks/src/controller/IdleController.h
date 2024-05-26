@@ -4,13 +4,15 @@
 #include "../SyncInfo.h"
 #include "IDisplayCtrlPanel.h"
 #include "SpawnController.h"
-#include "TribeLogController.h"
 #include "CameraController.h"
 #include "GeneralController.h"
 #include "../GlobalTimerManager.h"
 #include "../MainThreadDispatcher.h"
 #include "ILoadable.h"
 #include "IQueueable.h"
+
+#include "TribeLogController.h"
+#include "ParasaurAlarmController.h"
 
 namespace Darks::Controller {
 
@@ -78,17 +80,20 @@ namespace Darks::Controller {
 			MainThreadDispatcher& dispatcher,
 			GlobalTimerManager& timer_manager,
 			SpawnController& spawn_controller,
-			TribeLogController& tribe_log_controller,
 			CameraController& camera_controller,
-			GeneralController& general_controller
+			GeneralController& general_controller,
+			TribeLogController& tribe_log_controller,
+			ParasaurAlarmController& parasaur_alarm_controller
 		) :
 			conf_(conf),
 			dispatcher_(dispatcher),
 			timer_manager_(timer_manager),
 			spawn_controller_(spawn_controller),
-			tribe_log_controller_(tribe_log_controller),
 			camera_controller_(camera_controller),
-			general_controller_(general_controller)
+			general_controller_(general_controller),
+			tribe_log_controller_(tribe_log_controller),
+			parasaur_alarm_controller_(parasaur_alarm_controller)
+
 		{ 
 			idle_bed_name_edit_ = conf_.idle_bed_name_;
 		}
@@ -97,30 +102,37 @@ namespace Darks::Controller {
 		/// Enters the player into idle state.
 		/// </summary>
 		/// <param name="info"></param>
-		void EnterIdle(SyncInfo& info , QueueSyncInfo& queue_sync_info) const;
+		void EnterIdle(SyncInfo& info , QueueSyncInfo& queue_sync_info);
 		/// <summary>
 		/// Exits the player from idle state.
 		/// </summary>
 		/// <param name="info"></param>
-		void ExitIdle(SyncInfo& info) const;
+		void ExitIdle(SyncInfo& info);
 
 		bool IsIdle() const { return is_idle_; }
 
 		void DisplayCtrlPanel() override;
+
+		bool StartPolling(QueueSyncInfo& queue_sync_info);
+		bool StopPolling();
 
 	private:
 		IdleConfig conf_;
 		MainThreadDispatcher& dispatcher_;
 		GlobalTimerManager& timer_manager_;
 		SpawnController& spawn_controller_;
-		TribeLogController& tribe_log_controller_;
 		CameraController& camera_controller_;
 		GeneralController& general_controller_;
+		TribeLogController& tribe_log_controller_;
+		ParasaurAlarmController& parasaur_alarm_controller_;
 
 		bool is_idle_ = false;
 		
 		bool is_editing_ = false;
 		std::string idle_bed_name_edit_ = "";
+
+		// Timer id for polling
+		int timer_id_ = 0;
 	};
 }
 

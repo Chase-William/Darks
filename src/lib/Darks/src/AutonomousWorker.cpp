@@ -200,13 +200,14 @@ namespace Darks {
 		if (ImGui::Button(is_running ? "Leave Autonomous Mode" : "Enter Autonomous Mode")) {
 			if (is_running)
 				Stop();
-			else {
-				Start();		
-			}
+			else
+				Start();					
 		}
 
+		process_controller_.DisplayCtrlPanel();
+		idle_controller_.DisplayCtrlPanel();		
 		tribe_log_controller_.DisplayCtrlPanel();
-		idle_controller_.DisplayCtrlPanel();
+		parasaur_alarm_controller_.DisplayCtrlPanel();
 
 		// Allow contained controllers to display information about themselves
 		for (auto& queueable : *queueables_) {

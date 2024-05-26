@@ -5,7 +5,7 @@
 namespace Darks::Controller {
 	const std::string TribeLogConfig::URL_SUBDIRECTORY_NAME = "tribe-log";
 
-	const int TRIBE_LOG_POLL_INTERVAL = 60000;
+	// const int TRIBE_LOG_POLL_INTERVAL = 60000;
 
 	TribeLogController::TribeLogController(
 		TribeLogConfig conf
@@ -13,7 +13,8 @@ namespace Darks::Controller {
 		conf_(conf)
 	{
 		// Copy the remote webhook url into the web hook url modifiable field for the user
-		post_logs_edit_ = conf.post_logs_webhook_;
+		post_logs_edit_ = conf_.post_logs_webhook_;
+		enabled_edit_ = conf_.enabled_;
 	}
 
 	bool TribeLogController::OpenTribeLog(SyncInfo& info, int wait_for_tribe_log_open_poll_interval, int wait_for_tribe_log_open_timeout) const {
@@ -51,7 +52,7 @@ namespace Darks::Controller {
 		if (ImGui::TreeNode("Tribe Log Logging Configuration")) {
 			if (is_editing_) {
 				if (ImGui::Button("Save")) {
-					conf_.Save(post_logs_edit_);
+					conf_.Save(post_logs_edit_, enabled_edit_);
 					is_editing_ = false;
 					ImGui::TreePop();
 					return;
@@ -59,8 +60,11 @@ namespace Darks::Controller {
 				ImGui::SameLine();
 				if (ImGui::Button("Cancel")) {
 					post_logs_edit_ = conf_.post_logs_webhook_;
+					enabled_edit_ = conf_.enabled_;
 					is_editing_ = false;
 				}
+				ImGui::Checkbox("Enabled", &enabled_edit_);
+				ImGui::SameLine();
 				UI::InputText("Post Tribe-Logs Webhook", &post_logs_edit_);
 			}
 			else {
@@ -68,64 +72,12 @@ namespace Darks::Controller {
 					is_editing_ = true;
 				}
 				ImGui::SameLine();
-				ImGui::Text(std::format("Using Webhook: {}", conf_.post_logs_webhook_.empty() ? "No" : "Yes").c_str());
+				ImGui::Text(std::format("Enabled: {}", conf_.enabled_ ? "(Yes)" : "(No)").c_str());
+				ImGui::SameLine();
+				ImGui::Text(std::format("Using Webhook: {}", conf_.post_logs_webhook_.empty() ? "(No)" : "(Yes)").c_str());
 			}
 
 			ImGui::TreePop();
 		}		
-	}
-
-	bool TribeLogController::StartPollingTribeLogs(GlobalTimerManager& timer_manager, std::function<void()> tribe_log_closed_unexpectedly_handler_) {
-		// Prevent resource leak by accidental overwriting of timer_id_ 
-		if (timer_id_) {
-			DARKS_ERROR(std::format("Attempted to start polling tribe logs when already polling."));
-			return false;
-		}
-
-		// Register the farm callback on a repeating timer
-		auto result = timer_manager.Register([this, &timer_manager, tribe_log_closed_unexpectedly_handler_]() {
-			if (this->on_log_) {
-				DARKS_INFO("Tribe Log Controller fired, capturing screenshot and checking if character died while idle.");				
-
-				// Allow a listener to handle the tribe log closing unexpectedly (character probably died or something)
-				if (!IsTribeLogOpen()) {
-					DARKS_WARN("Tribe log unexpectedly closed.");
-					tribe_log_closed_unexpectedly_handler_();
-					return;
-				}
-
-				this->on_log_(this->GetScreenshot(), this->GetWebhookUrl());
-			}
-		},
-		TRIBE_LOG_POLL_INTERVAL);
-
-		if (result.has_value()) {
-			timer_id_ = result.value();
-			DARKS_INFO(std::format("Succesfully register timer with id {}.", timer_id_));
-			return true;
-		}
-		else {
-			DARKS_INFO("Failed to register timer.");
-		}
-
-		return false;
-	}
-
-	bool TribeLogController::StopPollingTribeLogs(GlobalTimerManager& timer_manager) {
-		if (!timer_id_) {
-			DARKS_INFO("Attempted to unregister a timer that was already unregistered.");
-			return true;
-		}
-		auto status = timer_manager.Unregister(timer_id_);
-
-		if (status) {
-			DARKS_INFO(std::format("Unregistered timer with id {}.", timer_id_));
-			timer_id_ = 0; // reset to default		
-		}
-		else {
-			DARKS_WARN(std::format("Failed to unregister timer with id {}.", timer_id_));
-		}
-
-		return status;
-	}
+	}	
 }

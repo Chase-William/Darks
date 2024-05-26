@@ -65,12 +65,13 @@ namespace Darks {
 				const int SUICIDE_CONFIG_INDEX = 6;
 				const int IDLE_CONFIG_INDEX = 7;
 				const int LOOT_CRATE_CONFIG_INDEX = 8;
+				const int PARASAUR_ALARM_CONFIG_INDEX = 9;
 
 				// Create a batch of request to be made in parallel
 				std::vector<cpr::AsyncWrapper<cpr::Response, true>> responses{				
-					cpr::MultiPostAsync(						
+					cpr::MultiPostAsync(
 						Controller::MovementConfig::GetLoadRequest(
-							Controller::MovementConfig::URL_SUBDIRECTORY_NAME),						
+							Controller::MovementConfig::URL_SUBDIRECTORY_NAME),
 						Controller::ProcessConfig::GetLoadRequest(
 							Controller::ProcessConfig::URL_SUBDIRECTORY_NAME),
 						Controller::ServerConfig::GetLoadRequest(
@@ -86,7 +87,10 @@ namespace Darks {
 						Controller::IdleConfig::GetLoadRequest(
 							Controller::IdleConfig::URL_SUBDIRECTORY_NAME),
 						Controller::Crate::LootCrateFarmConfig::GetLoadRequest(
-							Controller::Crate::LootCrateFarmConfig::URL_SUBDIRECTORY_NAME))
+							Controller::Crate::LootCrateFarmConfig::URL_SUBDIRECTORY_NAME),
+						Controller::ParasaurAlarmConfig::GetLoadRequest(
+							Controller::ParasaurAlarmConfig::URL_SUBDIRECTORY_NAME
+						))
 				};
 
 				// If the first transaction isn't completed within 10 ms, we'd like to cancel all of them
@@ -161,9 +165,10 @@ namespace Darks {
 								*dispatcher_,
 								timer_manager,
 								*spawn_controller_,
-								*tribe_log_controller_,
 								*camera_controller_,
-								*general_controller_);
+								*general_controller_,
+								*tribe_log_controller_,
+								*parasaur_alarm_controller_);
 							break;
 						case LOOT_CRATE_CONFIG_INDEX:
 							DARKS_INFO("Creating LootCrateController.");
@@ -177,6 +182,10 @@ namespace Darks {
 								*suicide_controller_,
 								*movement_controller_
 							);
+							break;
+						case PARASAUR_ALARM_CONFIG_INDEX:
+							DARKS_INFO("Creating ParasaurAlarmController");
+							parasaur_alarm_controller_ = std::make_unique<Controller::ParasaurAlarmController>(json);
 							break;
 						default:
 							auto msg = std::format("Failed to match a switch statement with controller information: {}.", json.dump());
@@ -215,6 +224,15 @@ namespace Darks {
 					discord_->GetClient()->execute_webhook(wh, msg);
 				};
 
+				parasaur_alarm_controller_->on_alarming_ = [this](std::unique_ptr<std::vector<char>> jpg_buf, const std::string& url) {
+					dpp::message msg{};
+					dpp::webhook wh{ url };
+
+					// Add the screenshot from memory to the message
+					msg.add_file("parasaur-alarm.jpg", std::string(jpg_buf->begin(), jpg_buf->end()));
+
+					discord_->GetClient()->execute_webhook(wh, msg);
+				};
 
 				// To be used when creating custom controllers
 				auto supplies = Supplies{
@@ -228,6 +246,7 @@ namespace Darks {
 						*process_controller_,
 						*server_controller_,
 						*loot_crate_farm_controller_,
+						*parasaur_alarm_controller_,
 						hotkey_manager_,
 						key_listener_,
 						timer_manager,
@@ -252,6 +271,7 @@ namespace Darks {
 					*process_controller_,
 					*server_controller_,
 					*tribe_log_controller_,
+					*parasaur_alarm_controller_,
 					std::move(queueables)
 				);
 

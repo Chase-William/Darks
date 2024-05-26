@@ -168,6 +168,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\controller\ParasaurAlarmController.h" />
     <ClInclude Include="src\controller\CameraDirection.h" />
     <ClInclude Include="src\controller\crate\navigator\INavigateable.h" />
     <ClInclude Include="src\controller\crate\station\CrateStation.h" />
@@ -220,6 +221,7 @@
     <ClInclude Include="src\ui\Wrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\controller\ParasaurAlarmController.cpp" />
     <ClCompile Include="src\controller\crate\Crate.cpp" />
     <ClCompile Include="src\controller\crate\station\CrateStation.cpp" />
     <ClCompile Include="src\controller\crate\station\DefaultCrateStation.cpp" />
