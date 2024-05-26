@@ -59,21 +59,24 @@ namespace Darks::Controller::Crate {
 				{ "post_loot_webhook", post_loot_webhook }				
 			};
 
-			auto res = cpr::PostCallback([](cpr::Response res) {
-				// -------------------------------------------------- Inform user of success or failure
-				if (res.status_code == 200) {
-					DARKS_INFO("Successfully updated remote with new loot crate control setup.");
-				}
-				else {
-					DARKS_ERROR("Failed to update remote with new loot crate control setup.");
-				}
-			},
-			cpr::Url(GetUrl() + "/update"),
-			cpr::Bearer(GetServiceState().GetBearerToken()),
-			cpr::Header{ { "Content-Type", "application/json" } },
-			cpr::Body{
-				j.dump()
-			});
+			auto res = cpr::PostCallback(
+				[](cpr::Response res) {
+					// -------------------------------------------------- Inform user of success or failure
+					if (res.status_code == 200) {
+						DARKS_INFO("Successfully updated remote with new loot crate control setup.");
+					}
+					else {
+						DARKS_ERROR("Failed to update remote with new loot crate control setup.");
+					}
+				},
+				cpr::Url(GetUrl() + "/update"),
+				cpr::Bearer(GetServiceState().GetBearerToken()),
+				cpr::Header{ { "Content-Type", "application/json" } },
+				cpr::Body{
+					j.dump()
+				},
+				GetServiceState().GetDefaultSSLOptions()
+			);
 
 			// Wether successful request or not, set this as our active
 			recurring_ = recurring;

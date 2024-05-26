@@ -14,7 +14,7 @@ namespace Darks::Controller {
 		static ServiceContext& GetServiceState();
 		static void SetServiceState(ServiceContext* ctx);
 
-		static std::tuple<cpr::Url, cpr::Bearer> GetLoadRequest(std::string loadable_subdirectory);
+		static std::tuple<cpr::Url, cpr::Bearer, cpr::SslOptions> GetLoadRequest(std::string loadable_subdirectory);
 	
 		virtual std::string GetUrl() const = 0;
 	};

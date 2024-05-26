@@ -36,7 +36,8 @@ namespace Darks::Controller {
 				{ "idle_bed_name", idle_bed_name }
 			};
 
-			auto res = cpr::PostCallback([](cpr::Response res) {
+			auto res = cpr::PostCallback(
+				[](cpr::Response res) {
 					std::printf("");
 					// -------------------------------------------------- Inform user of success or failure
 					if (res.status_code == 200) {
@@ -51,7 +52,8 @@ namespace Darks::Controller {
 				cpr::Header{ { "Content-Type", "application/json" } },
 				cpr::Body{
 					j.dump()
-				}
+				},
+				GetServiceState().GetDefaultSSLOptions()
 			);
 
 			idle_bed_name_ = idle_bed_name;
