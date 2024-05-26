@@ -35,21 +35,24 @@ namespace Darks::Controller {
 				{ "post_logs_webhook", post_logs_webhook }
 			};
 
-			auto res = cpr::PostCallback([](cpr::Response res) {
-				std::printf("");
-				if (res.status_code == 200) {
-					DARKS_INFO("Successfully updated remote with new tribe logging config.");
-				}
-				else {
-					DARKS_ERROR("Failed to update remote with new tribe logging config.");
-				}
-			},
-			cpr::Url(GetUrl() + "/update"),
-			cpr::Bearer(GetServiceState().GetBearerToken()),
-			cpr::Header{ { "Content-Type", "application/json"} },
-			cpr::Body{
-				j.dump()
-			});
+			auto res = cpr::PostCallback(
+				[](cpr::Response res) {
+					std::printf("");
+					if (res.status_code == 200) {
+						DARKS_INFO("Successfully updated remote with new tribe logging config.");
+					}
+					else {
+						DARKS_ERROR("Failed to update remote with new tribe logging config.");
+					}
+				},
+				cpr::Url(GetUrl() + "/update"),
+				cpr::Bearer(GetServiceState().GetBearerToken()),
+				cpr::Header{ { "Content-Type", "application/json"} },
+				cpr::Body{
+					j.dump()
+				},
+				GetServiceState().GetDefaultSSLOptions()
+			);
 			
 			post_logs_webhook_ = post_logs_webhook;
 		}

@@ -4,7 +4,8 @@ namespace Darks {
 	DarksApp::DarksApp(
 		std::string distro_token,
 		std::optional<std::string> discord_bot_token,
-		std::function<std::unique_ptr<std::vector<Controller::IQueueable*>>(Supplies& supplies)> make_queueables
+		std::function<std::unique_ptr<std::vector<Controller::IQueueable*>>(Supplies& supplies)> make_queueables,
+		std::string darks_restapi_base_url
 	) {
 		assert(distro_token.length() != 0);
 		if (distro_token.length() == 0) {
@@ -23,7 +24,7 @@ namespace Darks {
 		DARKS_ERROR("Test Message");
 		DARKS_CRITICAL("Test Message");		
 
-		service_state_ = std::make_unique<ServiceContext>(distro_token);
+		service_state_ = std::make_unique<ServiceContext>(distro_token, darks_restapi_base_url);
 		login_window_ = std::make_unique<UI::LoginWindow>(*service_state_);		
 
 		if (discord_bot_token.has_value()) {
@@ -34,9 +35,7 @@ namespace Darks {
 		else {
 			DARKS_INFO("Creating discord bot for webhooks only.");
 			discord_ = std::make_unique<DarksDiscord>(); // Create discord bot for operating webhooks
-		}
-
-		ServiceContext* test = &*service_state_;		
+		}		
 
 		service_state_->on_logged_in = [this, make_queueables]() {
 			// -------------------------------------------------------------------- We need to perform https://docs.libcpr.org/advanced-usage.html#asynchronous-requests to get all configurations
@@ -107,8 +106,8 @@ namespace Darks {
 
 					// Check if job is done
 					if (res.IsCancelled()) {
-						printf("asd");
-						// ------------------------------- error handle
+						MessageBoxA(NULL, "Fetching configuration data was cancelled.", "Error", MB_OK);
+						exit(0);
 					}
 
 					// Wait until this request is done
@@ -116,8 +115,8 @@ namespace Darks {
 
 					// Check status code123
 					if (result.status_code != 200) {
-						std::printf("");
-						// ------------------------------- error handle
+						MessageBoxA(NULL, std::format("Failed to acquire configuration data from server with: {}", result.text).c_str(), "Error", MB_OK);
+						exit(0);
 					}
 					
 					try {
@@ -188,10 +187,9 @@ namespace Darks {
 					catch (nlohmann::json::out_of_range ex) {
 						auto msg = ex.what();
 						DARKS_CRITICAL(msg);
-
-						// ------------------------------- error handle
+						MessageBoxA(NULL, std::format("Failed to create a standard library controller with ex: {}", msg).c_str(), "Error", MB_OK);
+						exit(0);
 					}																												
-
 				}				
 
 				DARKS_INFO("Finished Controller Initialization.");

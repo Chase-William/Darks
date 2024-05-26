@@ -2,9 +2,11 @@
 
 namespace Darks {
 	ServiceContext::ServiceContext(
-		std::string distro_token
+		std::string distro_token,
+		std::string darks_restapi_base_url
 	) : 
-		distro_token_(distro_token)
+		distro_token_(distro_token),
+		darks_restapi_base_url_(darks_restapi_base_url)
 	{ }
 
 	/// <summary>
@@ -73,7 +75,7 @@ namespace Darks {
 				if (on_logged_in)
 					on_logged_in();
 			},
-			cpr::Url{ "http://localhost:5000/login" },
+			cpr::Url{ GetBaseUrl() + "/" + "login" },
 			cpr::Header{
 				{ "Content-Type", "application/json"},
 				{ "Distro-Token", distro_token_ },
@@ -83,7 +85,8 @@ namespace Darks {
 			cpr::Body{
 				resolution_json.dump()
 			},
-			cpr::Timeout{ 1000 }
+			cpr::Timeout{ 1000 },
+			GetDefaultSSLOptions()
 		);	
 	}
 }

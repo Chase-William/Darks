@@ -37,24 +37,35 @@ namespace Darks {
 
 	class ServiceContext {
 	public:
-		ServiceContext(std::string distro_token);
+		ServiceContext(
+			std::string distro_token,
+			std::string darks_restapi_base_url
+		);
 		
 		inline bool IsLoggedIn() const { return !!bearer_token_; }
 
 		inline const std::string& GetBearerToken() const { return *bearer_token_; }
 
-		inline const std::string& GetBaseUrl() const { return base_url_; }
+		inline const std::string& GetBaseUrl() const { return darks_restapi_base_url_; }
 
 		void Login(
 			std::string access_key,
 			std::function<void(std::optional<std::unique_ptr<RequestErrorMessage>> err_msg)> result_callback = NULL	
 		);
 
+		inline cpr::SslOptions GetDefaultSSLOptions() {
+			cpr::SslOptions ssl_options{};
+			ssl_options.verify_host = false;
+			ssl_options.verify_peer = false;
+			ssl_options.verify_status = false;
+			return ssl_options;
+		}
+
 		std::function<void()> on_logged_in;
 
 	private:
 		std::unique_ptr<std::string> bearer_token_ = nullptr;
-		std::string base_url_ = "http://localhost:5000";
+		std::string darks_restapi_base_url_;
 		std::string distro_token_ = "";
 	};
 

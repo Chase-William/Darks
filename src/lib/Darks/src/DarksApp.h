@@ -53,7 +53,8 @@ namespace Darks {
 		DarksApp(
 			std::string distro_token,
 			std::optional<std::string> discord_bot_token,
-			std::function<std::unique_ptr<std::vector<Controller::IQueueable*>>(Supplies& supplies)> make_queueables
+			std::function<std::unique_ptr<std::vector<Controller::IQueueable*>>(Supplies& supplies)> make_queueables,
+			std::string darks_restapi_base_url = "https://asa-darks.ddns.net"
 		);
 
 		void Run();		
