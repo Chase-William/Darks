@@ -11,11 +11,12 @@ namespace Darks::Controller {
 		service_state_ = service_state;
 	}
 
-	std::tuple<cpr::Url, cpr::Bearer> Darks::Controller::ILoadable::GetLoadRequest(std::string loadable_subdirectory)
+	std::tuple<cpr::Url, cpr::Bearer, cpr::SslOptions> Darks::Controller::ILoadable::GetLoadRequest(std::string loadable_subdirectory)
 	{
 		return std::tuple{ 
 			cpr::Url { service_state_->GetBaseUrl() + "/" + loadable_subdirectory },
-			cpr::Bearer{GetServiceState().GetBearerToken()}
+			cpr::Bearer{ service_state_->GetBearerToken() },
+			service_state_->GetDefaultSSLOptions()
 		};
 	}
 }

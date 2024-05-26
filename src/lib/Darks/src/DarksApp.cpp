@@ -4,7 +4,8 @@ namespace Darks {
 	DarksApp::DarksApp(
 		std::string distro_token,
 		std::optional<std::string> discord_bot_token,
-		std::function<std::unique_ptr<std::vector<Controller::IQueueable*>>(Supplies& supplies)> make_queueables
+		std::function<std::unique_ptr<std::vector<Controller::IQueueable*>>(Supplies& supplies)> make_queueables,
+		std::string darks_restapi_base_url
 	) {
 		assert(distro_token.length() != 0);
 		if (distro_token.length() == 0) {
@@ -23,7 +24,7 @@ namespace Darks {
 		DARKS_ERROR("Test Message");
 		DARKS_CRITICAL("Test Message");		
 
-		service_state_ = std::make_unique<ServiceContext>(distro_token);
+		service_state_ = std::make_unique<ServiceContext>(distro_token, darks_restapi_base_url);
 		login_window_ = std::make_unique<UI::LoginWindow>(*service_state_);		
 
 		if (discord_bot_token.has_value()) {
@@ -34,9 +35,7 @@ namespace Darks {
 		else {
 			DARKS_INFO("Creating discord bot for webhooks only.");
 			discord_ = std::make_unique<DarksDiscord>(); // Create discord bot for operating webhooks
-		}
-
-		ServiceContext* test = &*service_state_;		
+		}		
 
 		service_state_->on_logged_in = [this, make_queueables]() {
 			// -------------------------------------------------------------------- We need to perform https://docs.libcpr.org/advanced-usage.html#asynchronous-requests to get all configurations
