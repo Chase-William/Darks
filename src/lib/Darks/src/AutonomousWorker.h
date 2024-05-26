@@ -21,6 +21,7 @@
 #include "controller/ProcessController.h"
 #include "controller/ServerController.h"
 #include "controller/TribeLogController.h"
+#include "controller/ParasaurAlarmController.h"
 #include "MainThreadDispatcher.h"
 #include "SyncInfo.h"
 
@@ -50,6 +51,7 @@ namespace Darks {
 			Controller::ProcessController& process_controller,
 			Controller::ServerController& server_controller,
 			Controller::TribeLogController& tribe_log_controller,
+			Controller::ParasaurAlarmController& parasaur_alarm_controller,
 			std::unique_ptr<std::vector<Controller::IQueueable*>> queueables
 		) :
 			timer_manager_(timer_manager),
@@ -59,6 +61,7 @@ namespace Darks {
 			process_controller_(process_controller),
 			server_controller_(server_controller),
 			tribe_log_controller_(tribe_log_controller),
+			parasaur_alarm_controller_(parasaur_alarm_controller),
 			main_thread_dispatcher_(main_thread_dispatcher)
 		{ 
 			queueables_ = std::move(queueables); // Take ownership of queueables via move
@@ -103,6 +106,7 @@ namespace Darks {
 		Controller::ProcessController& process_controller_;
 		Controller::ServerController& server_controller_;	
 		Controller::TribeLogController& tribe_log_controller_;
+		Controller::ParasaurAlarmController& parasaur_alarm_controller_;
 		Controller::MouseController mouse_controller_{};
 
 		inline void SetIsRunning(bool value) {			

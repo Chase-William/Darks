@@ -225,6 +225,15 @@ namespace Darks {
 					discord_->GetClient()->execute_webhook(wh, msg);
 				};
 
+				parasaur_alarm_controller_->on_alarming_ = [this](std::unique_ptr<std::vector<char>> jpg_buf, const std::string& url) {
+					dpp::message msg{};
+					dpp::webhook wh{ url };
+
+					// Add the screenshot from memory to the message
+					msg.add_file("parasaur-alarm.jpg", std::string(jpg_buf->begin(), jpg_buf->end()));
+
+					discord_->GetClient()->execute_webhook(wh, msg);
+				};
 
 				// To be used when creating custom controllers
 				auto supplies = Supplies{
@@ -238,6 +247,7 @@ namespace Darks {
 						*process_controller_,
 						*server_controller_,
 						*loot_crate_farm_controller_,
+						*parasaur_alarm_controller_,
 						hotkey_manager_,
 						key_listener_,
 						timer_manager,
@@ -262,6 +272,7 @@ namespace Darks {
 					*process_controller_,
 					*server_controller_,
 					*tribe_log_controller_,
+					*parasaur_alarm_controller_,
 					std::move(queueables)
 				);
 

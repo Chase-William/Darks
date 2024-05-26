@@ -100,12 +100,12 @@ namespace Darks::Controller {
 		/// Enters the player into idle state.
 		/// </summary>
 		/// <param name="info"></param>
-		void EnterIdle(SyncInfo& info , QueueSyncInfo& queue_sync_info) const;
+		void EnterIdle(SyncInfo& info , QueueSyncInfo& queue_sync_info);
 		/// <summary>
 		/// Exits the player from idle state.
 		/// </summary>
 		/// <param name="info"></param>
-		void ExitIdle(SyncInfo& info) const;
+		void ExitIdle(SyncInfo& info);
 
 		bool IsIdle() const { return is_idle_; }
 

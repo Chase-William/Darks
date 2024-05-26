@@ -9,13 +9,16 @@ namespace Darks::Controller {
 		ParasaurAlarmConfig conf
 	) :
 		conf_(conf)
-	{ }
+	{
+		alarm_webhook_edit_ = conf_.alarm_webhook_;
+		enabled_edit_ = conf_.enabled_;
+	}
 
 	void ParasaurAlarmController::DisplayCtrlPanel() {
 		if (ImGui::TreeNode("Parasaur Alarm Configuration")) {
 			if (is_editing_) {
 				if (ImGui::Button("Save")) {
-					// conf_.Save(post_logs_edit_, enabled_edit_);
+					conf_.Save(alarm_webhook_edit_, enabled_edit_);
 					is_editing_ = false;
 					ImGui::TreePop();
 					return;

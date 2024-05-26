@@ -28,14 +28,41 @@ namespace Darks::Controller {
 		inline std::string GetUrl() const override {
 			return std::string(GetServiceState().GetBaseUrl() + "/" + URL_SUBDIRECTORY_NAME);
 		}
+
+		inline void Save(
+			std::string short_cut_url_path
+		) {
+			nlohmann::json j{
+				{ "short_cut_url_path", short_cut_url_path }
+			};
+
+			auto res = cpr::PostCallback([](cpr::Response res) {
+				std::printf("");
+				if (res.status_code == 200) {
+					DARKS_INFO("Successfully updated remote with new process config.");
+				}
+				else {
+					DARKS_ERROR("Failed to update remote with new process config.");
+				}
+				},
+				cpr::Url(GetUrl() + "/update"),
+				cpr::Bearer(GetServiceState().GetBearerToken()),
+				cpr::Header{ { "Content-Type", "application/json"} },
+				cpr::Body{
+					j.dump()
+				});
+
+			// Update config
+			short_cut_url_path_ = short_cut_url_path;
+		}
 	};
 
-	static void to_json(nlohmann::json& json, const ProcessConfig& conf) {
+	/*static void to_json(nlohmann::json& json, const ProcessConfig& conf) {
 		json = nlohmann::json({
 			{ "process_name", conf.process_name_ },
 			{ "launch_uri_str", conf.launch_uri_str_ }
 		});
-	}
+	}*/
 
 	static void from_json(const nlohmann::json& json, ProcessConfig& conf) {
 		auto& machine = json.at("machine");
@@ -79,6 +106,9 @@ namespace Darks::Controller {
 		ProcessConfig conf_;
 
 		MouseController mouse_controller_{};
+
+		bool is_editing_ = false;
+		std::string short_cut_url_path_edit_ = "";
 	};
 }
 

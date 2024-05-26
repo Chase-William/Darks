@@ -4,6 +4,8 @@
 
 #include "imgui.h"
 
+#include "../ui/Wrapper.h"
+
 namespace Darks::Controller {
 	const std::string ProcessConfig::URL_SUBDIRECTORY_NAME = "process";
 
@@ -11,7 +13,9 @@ namespace Darks::Controller {
 		ProcessConfig conf
 	) :
 		conf_(conf)
-	{ }
+	{ 
+		short_cut_url_path_edit_ = conf_.short_cut_url_path_;
+	}
 
 	void ProcessController::Terminate() const {
 		DWORD id = 0;
@@ -52,13 +56,39 @@ namespace Darks::Controller {
 	}
 
 	void ProcessController::DisplayCtrlPanel() {
+		if (ImGui::TreeNode("Ark Process Configuration")) {
+			if (is_editing_) {
+				if (ImGui::Button("Save")) {
+					conf_.Save(short_cut_url_path_edit_);
+					is_editing_ = false;
+					ImGui::TreePop();
+					return;
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Cancel")) {
+					short_cut_url_path_edit_ = conf_.short_cut_url_path_;
+					is_editing_ = false;
+				}
+				UI::InputText("Path to ASA Launch Shortcut", &short_cut_url_path_edit_);
+			}
+			else {
+				if (ImGui::Button("Edit")) {
+					is_editing_ = true;
+				}
+				ImGui::SameLine();
+				ImGui::Text(std::format("Shortcut Path: {}", conf_.short_cut_url_path_).c_str());
+			}
+
+			ImGui::TreePop();
+		}
+
 		// Allow user to manually terminate process
-		if (ImGui::Button("Launch Ark")) {
+		/*if (ImGui::Button("Launch Ark")) {
 			Launch();
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("Terminate Ark")) {
 			Terminate();
-		}
+		}*/
 	}
 }

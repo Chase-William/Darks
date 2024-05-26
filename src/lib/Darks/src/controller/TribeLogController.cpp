@@ -13,7 +13,8 @@ namespace Darks::Controller {
 		conf_(conf)
 	{
 		// Copy the remote webhook url into the web hook url modifiable field for the user
-		post_logs_edit_ = conf.post_logs_webhook_;
+		post_logs_edit_ = conf_.post_logs_webhook_;
+		enabled_edit_ = conf_.enabled_;
 	}
 
 	bool TribeLogController::OpenTribeLog(SyncInfo& info, int wait_for_tribe_log_open_poll_interval, int wait_for_tribe_log_open_timeout) const {

@@ -41,6 +41,7 @@ namespace Darks {
 		Controller::ProcessController& process_controller;
 		Controller::ServerController& server_controller;
 		Controller::Crate::LootCrateFarmController& loot_crate_farm_controller;
+		Controller::ParasaurAlarmController& parasaur_alarm_controller;
 		IO::GlobalHotKeyManager& hotkey_manager;
 		IO::GlobalKeyListener& key_listener;	
 		GlobalTimerManager& timer_manager;		
